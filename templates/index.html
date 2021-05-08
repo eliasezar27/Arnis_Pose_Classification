@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <title>Arnis Pose Detection</title>
+  </head>
+  <body>
+  <center>
+    {% if ans %}
+    <h1>ARNIS DETECTION</h1>
+    <img src="{{ url_for('video_feed') }}" alt = "Camera is Loading...">
+    {% else %}
+    <h1>Open Camera?</h1>
+    <form method="POST" action="{{url_for('index2')}}">
+      <input type="text" name="response" value="yes" hidden>
+      <br><input type='submit' name="Submit" value="YES">
+    </form>
+    {% endif %}
+  </center>
+  </body>
+<script>
+  window.scrollTo(0,document.body.scrollHeight);
+</script>
+</html>

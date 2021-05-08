@@ -8,7 +8,6 @@ import tensorflow as tf
 from object_detection.utils import config_util
 import os
 from object_detection.builders import model_builder
-import cv2
 CONFIG_PATH = "training_v2/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8.config"
 
 # Load pipeline config and build a detection model
@@ -21,14 +20,16 @@ ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
 ckpt.restore(os.path.join('training_v2', 'ckpt-10')).expect_partial()
 load_model = time.time()-strt
 
-print("loading time: ",load_model)
+print("loading time: ", load_model)
 
 # cap = cv2.VideoCapture('Arnis_12 Striking Techniques.mp4')
-cap = cv2.VideoCapture('vids/Arnis_12 Striking Techniques.mp4')
+cap = cv2.VideoCapture('vids/12 Basics Blocks of 12 Strikes _ Arnis Tutorial.mp4')
 
 # Check if camera opened successfully
 if not cap.isOpened():
     print("Error opening video stream or file")
+
+prev_frame_time = 0
 
 # Read until video is completed
 while cap.isOpened():
@@ -37,17 +38,27 @@ while cap.isOpened():
     if ret:
         new_image = np.zeros(frame.shape, frame.dtype)
 
-        alpha = 1.3 # contrast 1.0 - 3.0
-        beta = 66 # brightness 0 - 100
+        # contrast 1.0 - 3.0
+        alpha = 1.3
+
+        # brightness 0 - 100
+        beta = 66
 
         new_image[:, :, :] = np.clip(alpha * frame[:, :, :] + beta, 0, 255)
 
         # Display the resulting frame
-        # frame = pose_det(frame)
-        new_image = pose_det(new_image, detection_model)
+        frame = pose_det(frame, detection_model)
+        # new_image = pose_det(new_image, detection_model)
         # frame = cv2.flip(frame, 1)
-        cv2.imshow('Frame', new_image)
-        # cv2.imshow('Pred', frame)
+        # cv2.imshow('Frame', new_image)
+
+        new_frame_time = time.time()
+        fps = int(1 / (new_frame_time - prev_frame_time))
+        prev_frame_time = new_frame_time
+        fps = str(fps)
+        frame = cv2.putText(frame, fps, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
+
+        cv2.imshow('Pred', frame)
 
         # Press Q on keyboard to  exit
         if cv2.waitKey(1) & 0xFF == ord('q'):

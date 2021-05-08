@@ -23,7 +23,7 @@ ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
 ckpt.restore(os.path.join('training_v2', 'ckpt-10')).expect_partial()
 load_model = time.time()-strt
 
-print("loading time: ",load_model)
+print("loading time: ", load_model)
 
 
 # initialize the output frame and a lock used to ensure thread-safe
@@ -66,7 +66,7 @@ def camera():
         fps = int(1/(new_frame_time - prev_frame_time))
         prev_frame_time = new_frame_time
         fps = str(fps)
-        frame = cv2.putText(frame, fps, (20,40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
+        frame = cv2.putText(frame, fps, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
 
         # acquire the lock, set the output frame, and release the
         # lock

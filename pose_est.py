@@ -33,18 +33,19 @@ def pose_det(frame, model):
     if results.pose_landmarks:
         mpDraw.draw_landmarks(frame, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
 
-        for id, lm in enumerate(results.pose_landmarks.landmark):
-            # print(id, lm)
+        for jt_id, lm in enumerate(results.pose_landmarks.landmark):
+            # print(jt_id, lm)
             cx, cy, thr = int(lm.x * w), int(lm.y * h), lm.visibility
 
             if thr > 0.5:
-                joints[id] = (cx, cy)
-                # print(id, cx, cy, 'th: ', thr)
+                joints[jt_id] = (cx, cy)
+                # print(jt_id, cx, cy, 'th: ', thr)
 
     # joints_angles = joint_angles(joints, [(-1,-1),(-1,-1),(-1,-1),(-1,-1)])
     # frame = angle_vis(frame, joints, joints_angles)
 
     label, point_baston = strike(joints, bboxList)
+    color_text = (255, 0, 0) if 'Block' in label else (0, 255, 0)
 
     frame = cv2.line(frame, joints[22], bboxList[point_baston], (70, 92, 105), 9) if (22 in joints and bboxList[point_baston][0] >= 0 and bboxList[point_baston][1] >= 0) else frame
     frame = cv2.circle(frame, bboxList[point_baston], 10, (0, 0, 255), -1)
@@ -54,7 +55,7 @@ def pose_det(frame, model):
         lab_len = 480
     frame = cv2.flip(frame, 1)
     frame = cv2.rectangle(frame, (0, h), (lab_len, h-45), (255, 255, 255), cv2.FILLED)
-    frame = cv2.putText(frame, label, (1, h - 15), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
+    frame = cv2.putText(frame, label, (1, h - 15), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_text, 2, cv2.LINE_AA)
 
     return frame
 
@@ -69,15 +70,15 @@ def angle_det(frame):
     if results.pose_landmarks:
         mpDraw.draw_landmarks(frame, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
 
-        for id, lm in enumerate(results.pose_landmarks.landmark):
-            # print(id, lm)
+        for jt_id, lm in enumerate(results.pose_landmarks.landmark):
+            # print(jt_id, lm)
             cx, cy, thr = int(lm.x * w), int(lm.y * h), lm.visibility
 
             if thr > 0.5:
-                joints[id] = (cx, cy)
-                print(id, cx, cy, 'th: ', thr)
+                joints[jt_id] = (cx, cy)
+                print(jt_id, cx, cy, 'th: ', thr)
 
-    joints_angles = joint_angles(joints)
+    joints_angles = joint_angles(joints, [(-1, -1), (-1, -1), (-1, -1), (-1, -1)])
     frame = angle_vis(frame, joints, joints_angles)
 
     return frame, joints_angles
@@ -131,18 +132,19 @@ def det_baston(frame, model):
     label_id_offset = 1
     image_np_with_detections = image_np.copy()
 
-    # viz_utils.visualize_boxes_and_labels_on_image_array(
-    #     image_np_with_detections,
-    #     detections['detection_boxes'],
-    #     detections['detection_classes'] + label_id_offset,
-    #     detections['detection_scores'],
-    #     category_index,
-    #     use_normalized_coordinates=True,
-    #     max_boxes_to_draw=1,
-    #     min_score_thresh=.4,
-    #     agnostic_mode=False,
-    #     skip_scores=True,
-    #     skip_labels=True)
+    viz_utils.visualize_boxes_and_labels_on_image_array(
+        image_np_with_detections,
+        detections['detection_boxes'],
+        detections['detection_classes'] + label_id_offset,
+        detections['detection_scores'],
+        category_index,
+        use_normalized_coordinates=True,
+        max_boxes_to_draw=1,
+        min_score_thresh=.4,
+        agnostic_mode=False,
+        skip_scores=True,
+        skip_labels=True,
+        skip_boxes=True)
 
     det_scrs = list(detections['detection_scores'])
     det_boxes = list(detections['detection_boxes'])

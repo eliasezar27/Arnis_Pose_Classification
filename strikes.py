@@ -145,7 +145,7 @@ def strike(part_line, bboxList):
 	if kp_shown:
 
 		angle_dict = joint_angles(part_line, bboxList)
-		print(angle_dict)
+		# print(angle_dict)
 
 		r_elbow = angle_dict['right elbow']
 		l_elbow = angle_dict['left elbow']
@@ -246,8 +246,8 @@ def strike(part_line, bboxList):
 			label = "Left Temple Block"
 			print(label)
 
-		# Right Block
-		elif r_elbow > 130 and r_shoulder in range(148, 158) and l_elbow > 150 and l_shoulder in range(30, 50) and not r_wrist_up and l_wrist_up and rw_near_rs and not lw_near_ls:
+		# Right Temple Block
+		elif r_elbow > 130 and r_shoulder > 130 and l_elbow > 150 and l_shoulder < 90 and not r_wrist_up and l_wrist_up and rw_near_rs and not lw_near_ls:
 			label = "Right Temple Block"
 			print(label)
 
@@ -297,7 +297,7 @@ def strike(part_line, bboxList):
 			print(label)
 
 		# Rising Block
-		elif r_elbow > 150 and r_shoulder in range(120, 140) and l_elbow in range(80, 110) and l_shoulder > 160 and r_wrist_up and l_wrist_up:
+		elif r_elbow > 150 and r_shoulder in range(80, 160) and l_elbow in range(80, 110) and l_shoulder > 140 and r_wrist_up and l_wrist_up:
 			label = "Rising Block"
 			print(label)
 

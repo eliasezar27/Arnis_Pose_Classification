@@ -1,3 +1,5 @@
+import time
+
 import mediapipe as mp
 from strikes import strike, joint_angles
 import tensorflow as tf
@@ -119,7 +121,10 @@ def det_baston(frame, model):
     height, width, _ = frame.shape
 
     input_tensor = tf.convert_to_tensor(np.expand_dims(image_np, 0), dtype=tf.float32)
+
+    start = time.time()
     detections = detect_fn(input_tensor, model)
+    print('first detection time:', time.time() - start)
 
     num_detections = int(detections.pop('num_detections'))
     detections = {key: value[0, :num_detections].numpy()

@@ -23,7 +23,7 @@ ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
 ckpt.restore(os.path.join('training_v2', 'ckpt-10')).expect_partial()
 load_model = time.time()-strt
 
-print("loading time: ", load_model)
+print("obj det model loading time: ", load_model)
 
 
 # initialize the output frame and a lock used to ensure thread-safe
@@ -59,7 +59,10 @@ def camera():
         # read the next frame from the video stream, resize it,
         frame = vs.read()
         frame = imutils.resize(frame, width=800)
+
+        start = time.time()
         frame = pose_det(frame, detection_model)
+        print('Pose classification prediction time: ', time.time() - start)
 
         # FPS
         new_frame_time = time.time()

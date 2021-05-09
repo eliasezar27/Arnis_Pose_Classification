@@ -252,12 +252,13 @@ def strike(part_line, bboxList):
 			print(label)
 
 		# Left Shoulder Block
-		elif r_elbow > 140 and r_shoulder in range(75, 90) and l_elbow > 140 and l_shoulder > 150 and not r_wrist_up and l_wrist_up and not rw_near_rs and not lw_near_ls:
+		elif r_elbow > 140 and r_shoulder in range(65, 85) and l_elbow > 100 and l_shoulder > 140 and not r_wrist_up and l_wrist_up and not rw_near_rs and lw_near_ls:
+		# elif r_elbow > 140 and r_shoulder in range(75, 90) and l_elbow > 140 and l_shoulder > 150 and not r_wrist_up and l_wrist_up and not rw_near_rs and not lw_near_ls:
 			label = "Left Shoulder Block"
 			print(label)
 
 		# Right Shoulder Block
-		elif r_elbow > 180 and r_shoulder in range(115, 135) and l_elbow > 140 and l_shoulder < 20 and not r_wrist_up and l_wrist_up and rw_near_rs and not lw_near_ls:
+		elif r_elbow > 130 and r_shoulder in range(115, 135) and l_elbow > 140 and l_shoulder < 50 and not r_wrist_up and l_wrist_up and rw_near_rs and not lw_near_ls:
 			label = "Right Shoulder Block"
 			print(label)
 

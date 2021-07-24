@@ -13,6 +13,7 @@ pose = mpPose.Pose()
 mpDraw = mp.solutions.drawing_utils
 
 
+# Detection function for the arnis baston
 @tf.function
 def detect_fn(image, detection_model):
     image, shapes = detection_model.preprocess(image)
@@ -21,35 +22,52 @@ def detect_fn(image, detection_model):
     return detections
 
 
+# Method for classifying arnis poses
 def pose_det(frame, model):
     # Uncomment flip to extract angles, visually
     # frame = cv2.flip(frame, 1)
     imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    # Detect Baston
     frame, bboxList = det_baston(frame, model)
     h, w, c = frame.shape
 
+    # Detect body keypoints directly from re-RGB frame
     results = pose.process(imgRGB)
 
     # print(results.pose_landmarks)
     joints = {}
+    # Check if there's a detection
     if results.pose_landmarks:
+        # Draw landmark keypoints with edges
         mpDraw.draw_landmarks(frame, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
 
+        # Iterates thru all the landmarks using joints id and its corresponding coordinates
         for jt_id, lm in enumerate(results.pose_landmarks.landmark):
             # print(jt_id, lm)
+
+            # Get the x and y coordinates by multiplying the results to the image's dimension and its lm thresholds
             cx, cy, thr = int(lm.x * w), int(lm.y * h), lm.visibility
 
+            # if the threshold is > 50%
             if thr > 0.5:
+                # then the joints and its coordinates is added to the joints dictionary
                 joints[jt_id] = (cx, cy)
                 # print(jt_id, cx, cy, 'th: ', thr)
 
+    # Uncomment to visualize joints angles in the image
     # joints_angles = joint_angles(joints, [(-1,-1),(-1,-1),(-1,-1),(-1,-1)])
     # frame = angle_vis(frame, joints, joints_angles)
 
+    # Apply pose classification method
     label, point_baston = strike(joints, bboxList)
+
+    # Add text colors for each of the strikes and blocks
     color_text = (255, 0, 0) if 'Block' in label else (0, 255, 0)
 
+    # Draw line for the baston
     frame = cv2.line(frame, joints[22], bboxList[point_baston], (70, 92, 105), 9) if (22 in joints and bboxList[point_baston][0] >= 0 and bboxList[point_baston][1] >= 0) else frame
+    # Draw the end point of the baston from the wrist
     frame = cv2.circle(frame, bboxList[point_baston], 10, (0, 0, 255), -1)
 
     lab_len = int(len(label) * 26.5)

@@ -18,7 +18,7 @@ configs = config_util.get_configs_from_pipeline_file(CONFIG_PATH)
 detection_model = model_builder.build(model_config=configs['model'], is_training=False)
 
 strt = time.time()
-# Restore checkpoint
+# Load restored checkpoint
 ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
 ckpt.restore(os.path.join('training_v2', 'ckpt-10')).expect_partial()
 load_model = time.time()-strt
@@ -39,17 +39,20 @@ time.sleep(2.0)
 prev_frame_time = 0
 
 
+# Index page
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
 
 
+# Pose Classification Page
 @app.route('/opencam', methods=['GET', 'POST'])
 def index2():
     answer = request.form['response']
     return render_template('index.html', ans=answer)
 
 
+# Read poses from camera input
 def camera():
     global vs, outputFrame, lock, prev_frame_time
     # grab global references to the video stream, output frame, and
@@ -64,6 +67,10 @@ def camera():
         frame = pose_det(frame, detection_model)
         print('Pose classification prediction time: ', time.time() - start)
 
+        # Save prediction/classification time in text file
+        with open('speed.txt', 'a') as f:
+            f.write(str(time.time() - start) + ", ")
+
         # FPS
         new_frame_time = time.time()
         fps = int(1/(new_frame_time - prev_frame_time))
@@ -77,6 +84,7 @@ def camera():
             outputFrame = frame.copy()
 
 
+# Generate video output in the webpage
 def generate():
     # grab global references to the output frame and lock variables
     global outputFrame, lock

@@ -38,6 +38,9 @@ vs = VideoStream(src=1).start()
 time.sleep(2.0)
 prev_frame_time = 0
 
+# Pose key start ADDED
+pose_key = 1
+
 
 # Index page
 @app.route('/', methods=['GET', 'POST'])
@@ -54,7 +57,7 @@ def index2():
 
 # Read poses from camera input
 def camera():
-    global vs, outputFrame, lock, prev_frame_time
+    global vs, outputFrame, lock, prev_frame_time, pose_key
     # grab global references to the video stream, output frame, and
     # lock variables
 
@@ -63,9 +66,26 @@ def camera():
         frame = vs.read()
         frame = imutils.resize(frame, width=800)
 
+        # ADDED: get frame dimension
+        h, w, c = frame.shape
+
         start = time.time()
-        frame = pose_det(frame, detection_model)
+        # added arg: pose key, added var: grade
+        frame, grade = pose_det(frame, detection_model, pose_key)
         print('Pose classification prediction time: ', time.time() - start)
+
+        frame = cv2.putText(frame, "Grade:" + str(grade), (w - 175, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
+        frame = cv2.rectangle(frame, (0, h), (lab_len, h - 45), (255, 255, 255), cv2.FILLED)
+        print(str(pose_key) + " " + str(grade))
+
+        # Threshold ADDED
+        # next pose when threshold is greater than 74
+        if grade >= 90:
+            # next pose key until 23rd
+            if pose_key < 27:
+                pose_key = pose_key + 1
+            else:
+                pose_key = 1
 
         # Save prediction/classification time in text file
         with open('speed.txt', 'a') as f:
@@ -76,7 +96,7 @@ def camera():
         fps = int(1/(new_frame_time - prev_frame_time))
         prev_frame_time = new_frame_time
         fps = str(fps)
-        frame = cv2.putText(frame, fps, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
+        frame = cv2.putText(frame, "FPS: " + fps, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
 
         # acquire the lock, set the output frame, and release the
         # lock

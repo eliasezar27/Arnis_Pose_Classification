@@ -74,15 +74,15 @@ def camera():
         frame, grade = pose_det(frame, detection_model, pose_key)
         print('Pose classification prediction time: ', time.time() - start)
 
-        frame = cv2.putText(frame, "Grade:" + str(grade), (w - 175, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
-        frame = cv2.rectangle(frame, (0, h), (lab_len, h - 45), (255, 255, 255), cv2.FILLED)
+        frame = cv2.rectangle(frame, (w, 0), (w - 275, 45), (255, 255, 255), cv2.FILLED)
+        frame = cv2.putText(frame, "Grade:" + str(grade), (w - 275, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
         print(str(pose_key) + " " + str(grade))
 
         # Threshold ADDED
         # next pose when threshold is greater than 74
         if grade >= 90:
             # next pose key until 23rd
-            if pose_key < 27:
+            if pose_key < 26:
                 pose_key = pose_key + 1
             else:
                 pose_key = 1

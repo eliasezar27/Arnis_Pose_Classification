@@ -35,7 +35,7 @@ lock = threading.Lock()
 app = Flask(__name__)
 
 vs = VideoStream(src=1).start()
-time.sleep(2.0)
+# time.sleep(2.0)
 prev_frame_time = 0
 
 # Pose key start ADDED
@@ -69,23 +69,30 @@ def camera():
         # ADDED: get frame dimension
         h, w, c = frame.shape
 
+        # font color for grade
+        clr_grd = (0, 0, 255)
+
         start = time.time()
         # added arg: pose key, added var: grade
         frame, grade = pose_det(frame, detection_model, pose_key)
         print('Pose classification prediction time: ', time.time() - start)
 
-        frame = cv2.rectangle(frame, (w, 0), (w - 275, 45), (255, 255, 255), cv2.FILLED)
-        frame = cv2.putText(frame, "Grade:" + str(grade), (w - 275, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
-        print(str(pose_key) + " " + str(grade))
-
         # Threshold ADDED
         # next pose when threshold is greater than 74
         if grade >= 90:
-            # next pose key until 23rd
+            clr_grd = (0, 255, 0)
+
+            # next pose key until 23rd pose
             if pose_key < 26:
                 pose_key = pose_key + 1
             else:
                 pose_key = 1
+
+        # Visualize grade
+        frame = cv2.rectangle(frame, (w, 0), (w - 275, 45), (255, 255, 255), cv2.FILLED)
+        frame = cv2.putText(frame, "Grade:" + str(grade), (w - 275, 35), cv2.FONT_HERSHEY_SIMPLEX, 1.2, clr_grd, 2,
+                            cv2.LINE_AA)
+        print(str(pose_key) + " " + str(grade))
 
         # Save prediction/classification time in text file
         with open('speed.txt', 'a') as f:
@@ -96,7 +103,7 @@ def camera():
         fps = int(1/(new_frame_time - prev_frame_time))
         prev_frame_time = new_frame_time
         fps = str(fps)
-        frame = cv2.putText(frame, "FPS: " + fps, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
+        frame = cv2.putText(frame, "FPS: " + fps, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
 
         # acquire the lock, set the output frame, and release the
         # lock
@@ -134,7 +141,6 @@ def video_feed():
 
 if __name__ == '__main__':
     # construct the argument parser and parse command line arguments
-
     t = threading.Thread(target=camera)
     t.daemon = True
     t.start()

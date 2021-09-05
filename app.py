@@ -41,6 +41,11 @@ prev_frame_time = 0
 # Pose key start ADDED
 pose_key = 1
 
+# Store grades
+prev_grade = 0
+grade = 0
+ave_grade = [1 for i in range(27)]
+
 
 # Index page
 @app.route('/', methods=['GET', 'POST'])
@@ -57,17 +62,24 @@ def index2():
 
 # Read poses from camera input
 def camera():
-    global vs, outputFrame, lock, prev_frame_time, pose_key
+    global vs, outputFrame, lock, prev_frame_time, pose_key, grade, prev_grade, ave_grade
+    blur_end = False
     # grab global references to the video stream, output frame, and
     # lock variables
 
     while True:
+        # print('Grade: ', grade, ' Prev grade: ', prev_grade)
+        # Pause 3 sec if pose passed
+        if prev_grade >= 90:
+            time.sleep(2.0)
+
         # read the next frame from the video stream, resize it,
         frame = vs.read()
         frame = imutils.resize(frame, width=800)
 
         # ADDED: get frame dimension
         h, w, c = frame.shape
+        # print('Height: ', h, 'Width: ', w)
 
         # font color for grade
         clr_grd = (0, 0, 255)
@@ -76,6 +88,9 @@ def camera():
         # added arg: pose key, added var: grade
         frame, grade = pose_det(frame, detection_model, pose_key)
         print('Pose classification prediction time: ', time.time() - start)
+
+        # Compute overall grade
+        ave_grade[pose_key] = grade
 
         # Threshold ADDED
         # next pose when threshold is greater than 74
@@ -87,12 +102,13 @@ def camera():
                 pose_key = pose_key + 1
             else:
                 pose_key = 1
+                blur_end = True
 
         # Visualize grade
         frame = cv2.rectangle(frame, (w, 0), (w - 275, 45), (255, 255, 255), cv2.FILLED)
         frame = cv2.putText(frame, "Grade:" + str(grade), (w - 275, 35), cv2.FONT_HERSHEY_SIMPLEX, 1.2, clr_grd, 2,
                             cv2.LINE_AA)
-        print(str(pose_key) + " " + str(grade))
+        # print(str(pose_key) + " " + str(grade))
 
         # Save prediction/classification time in text file
         with open('speed.txt', 'a') as f:
@@ -105,9 +121,34 @@ def camera():
         fps = str(fps)
         frame = cv2.putText(frame, "FPS: " + fps, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
 
+        # Check whether the last pose is done
+        if blur_end:
+            # Blur video feed after completing 24 needed poses
+            overlay = frame.copy()
+            output = frame.copy()
+            overlay = cv2.rectangle(overlay, (0, 0), (w, h), (0, 0, 0), -1)
+            frame = cv2.addWeighted(overlay, 0.7, output, 0.3, 0, output)
+
+            # Put text after completing all poses
+            fnt = cv2.FONT_HERSHEY_DUPLEX
+            txt1 = "YOU HAVE COMPLETED"
+            txt2 = "THE 24 BASIC TECHNIQUES OF ARNIS"
+            text_sz1 = cv2.getTextSize(txt1, fnt, 1, 2)[0]
+            text_sz2 = cv2.getTextSize(txt2, fnt, 1, 2)[0]
+
+            txtX1 = int((output.shape[1] - text_sz1[0]) / 2)
+            txtY1 = int(((output.shape[0] + text_sz1[1]) / 2) - (text_sz1[1] / 2))
+
+            txtX2 = int((output.shape[1] - text_sz2[0]) / 2)
+            txtY2 = int(((output.shape[0] + text_sz1[1]) / 2) + (text_sz1[1]))
+
+            frame = cv2.putText(frame, txt1, (txtX1, txtY1), fnt, 1, (255, 255, 255), 2)
+            frame = cv2.putText(frame, txt2, (txtX2, txtY2), fnt, 1, (255, 255, 255), 2)
+
         # acquire the lock, set the output frame, and release the
         # lock
         with lock:
+            prev_grade = grade
             outputFrame = frame.copy()
 
 
@@ -115,6 +156,7 @@ def camera():
 def generate():
     # grab global references to the output frame and lock variables
     global outputFrame, lock
+
     # loop over frames from the output stream
     while True:
         # wait until the lock is acquired

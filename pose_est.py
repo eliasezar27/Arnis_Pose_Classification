@@ -37,6 +37,8 @@ def pose_det(frame, model, key):
     # frame = cv2.flip(frame, 1)
     imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
+    grade = 0
+
     # Detect Baston
     frame, bboxList = det_baston(frame, model)
     h, w, c = frame.shape
@@ -78,24 +80,30 @@ def pose_det(frame, model, key):
 
     # old: Draw line for the baston
 
-    lab_len = int(len(label) * 26.5)
-    if lab_len > 450:
-        lab_len = 480
     # frame = cv2.flip(frame, 1)
     # frame = cv2.rectangle(frame, (0, h), (lab_len, h - 45), (255, 255, 255), cv2.FILLED)
     # frame = cv2.putText(frame, label, (1, h - 15), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_text, 2, cv2.LINE_AA)
 
-    grade, point_baston = strike(joints, bboxList, key)
+    tm_now = time.time()
+    dat_tm = time.localtime(tm_now)
+    print(dat_tm.tm_sec)
+    if dat_tm.tm_sec % 5 == 0:
+        grade, point_baston = strike(joints, bboxList, key)
 
-    # Draw line for the baston
-    frame = cv2.line(frame, joints[22], bboxList[point_baston], (70, 92, 105), 9) if (
-            22 in joints and bboxList[point_baston][0] >= 0 and bboxList[point_baston][1] >= 0) else frame
-    # Draw the end point of the baston from the wrist
-    frame = cv2.circle(frame, bboxList[point_baston], 10, (0, 0, 255), -1)
+        # Draw line for the baston
+        frame = cv2.line(frame, joints[22], bboxList[point_baston], (70, 92, 105), 9) if (
+                22 in joints and bboxList[point_baston][0] >= 0 and bboxList[point_baston][1] >= 0) else frame
+        # Draw the end point of the baston from the wrist
+        frame = cv2.circle(frame, bboxList[point_baston], 10, (0, 0, 255), -1)
+
+    fnt = cv2.FONT_HERSHEY_DUPLEX
+    lab_sz = cv2.getTextSize(label, fnt, 1.2, 2)[0]
+    labX = int(lab_sz[0])
+    labY = int(lab_sz[1])
 
     frame = cv2.flip(frame, 1)
-    frame = cv2.rectangle(frame, (0, h), (lab_len, h - 45), (255, 255, 255), cv2.FILLED)
-    frame = cv2.putText(frame, label, (1, h - 15), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_text, 2, cv2.LINE_AA)
+    frame = cv2.rectangle(frame, (0, h), (labX, h - labY - 20), (255, 255, 255), cv2.FILLED)
+    frame = cv2.putText(frame, label, (2, h - 15), fnt, 1.2, color_text, 2, cv2.LINE_AA)
 
     return frame, grade
 

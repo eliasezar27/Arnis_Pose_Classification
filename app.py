@@ -4,6 +4,7 @@ import threading
 from imutils.video import VideoStream
 import time
 from pose_est import pose_det
+from statistics import mean
 
 # Object Detection Modules
 import tensorflow as tf
@@ -64,13 +65,14 @@ def index2():
 def camera():
     global vs, outputFrame, lock, prev_frame_time, pose_key, grade, prev_grade, ave_grade
     blur_end = False
+    fnt = cv2.FONT_HERSHEY_DUPLEX
     # grab global references to the video stream, output frame, and
     # lock variables
 
     while True:
         # print('Grade: ', grade, ' Prev grade: ', prev_grade)
-        # Pause 3 sec if pose passed
-        if prev_grade >= 90:
+        # Pause 2 sec if pose passed
+        if prev_grade >= 75:
             time.sleep(2.0)
 
         # read the next frame from the video stream, resize it,
@@ -94,20 +96,22 @@ def camera():
 
         # Threshold ADDED
         # next pose when threshold is greater than 74
-        if grade >= 90:
+        if grade >= 75:
             clr_grd = (0, 255, 0)
 
             # next pose key until 23rd pose
             if pose_key < 26:
                 pose_key = pose_key + 1
             else:
-                pose_key = 1
+                pose_key = 0
                 blur_end = True
 
         # Visualize grade
-        frame = cv2.rectangle(frame, (w, 0), (w - 275, 45), (255, 255, 255), cv2.FILLED)
-        frame = cv2.putText(frame, "Grade:" + str(grade), (w - 275, 35), cv2.FONT_HERSHEY_SIMPLEX, 1.2, clr_grd, 2,
-                            cv2.LINE_AA)
+        txt_grd = "Grade:" + str(grade)
+        txt_grdsz = cv2.getTextSize(txt_grd, fnt, 1.2, 2)[0]
+
+        frame = cv2.rectangle(frame, (w, 0), (w - txt_grdsz[0], txt_grdsz[1]), (255, 255, 255), cv2.FILLED)
+        frame = cv2.putText(frame, txt_grd, (w - txt_grdsz[0], txt_grdsz[1]), fnt, 1.2, clr_grd, 2,cv2.LINE_AA)
         # print(str(pose_key) + " " + str(grade))
 
         # Save prediction/classification time in text file
@@ -130,11 +134,12 @@ def camera():
             frame = cv2.addWeighted(overlay, 0.7, output, 0.3, 0, output)
 
             # Put text after completing all poses
-            fnt = cv2.FONT_HERSHEY_DUPLEX
             txt1 = "YOU HAVE COMPLETED"
             txt2 = "THE 24 BASIC TECHNIQUES OF ARNIS"
+            txt3 = "GRADE: " + str(round(mean(ave_grade[3:]), 2))
             text_sz1 = cv2.getTextSize(txt1, fnt, 1, 2)[0]
             text_sz2 = cv2.getTextSize(txt2, fnt, 1, 2)[0]
+            text_sz3 = cv2.getTextSize(txt3, fnt, 2, 2)[0]
 
             txtX1 = int((output.shape[1] - text_sz1[0]) / 2)
             txtY1 = int(((output.shape[0] + text_sz1[1]) / 2) - (text_sz1[1] / 2))
@@ -142,8 +147,12 @@ def camera():
             txtX2 = int((output.shape[1] - text_sz2[0]) / 2)
             txtY2 = int(((output.shape[0] + text_sz1[1]) / 2) + (text_sz1[1]))
 
+            txtX3 = int((output.shape[1] - text_sz3[0]) / 2)
+            txtY3 = int(((output.shape[0] + text_sz1[1]) / 4))
+
             frame = cv2.putText(frame, txt1, (txtX1, txtY1), fnt, 1, (255, 255, 255), 2)
             frame = cv2.putText(frame, txt2, (txtX2, txtY2), fnt, 1, (255, 255, 255), 2)
+            frame = cv2.putText(frame, txt3, (txtX3, txtY3), fnt, 2, (0, 255, 0), 2)
 
         # acquire the lock, set the output frame, and release the
         # lock

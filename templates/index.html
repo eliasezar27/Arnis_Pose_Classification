@@ -8,10 +8,12 @@
     <h1>ARNIS DETECTION</h1>
     <img src="{{ url_for('video_feed') }}" alt = "Camera is Loading...">
     {% else %}
-    <h1>Open Camera?</h1>
+    <h1>Select Method</h1>
     <form method="POST" action="{{url_for('index2')}}">
-      <input type="text" name="response" value="yes" hidden>
-      <br><input type='submit' name="Submit" value="YES">
+      <!--<input type="text" name="response" value="yes" hidden>-->
+      <br><input type='submit' name="class" value="Classification" />
+          <input type='submit' name="grading" value="Grade" />
+
     </form>
     {% endif %}
   </center>

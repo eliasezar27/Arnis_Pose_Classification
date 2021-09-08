@@ -39,13 +39,16 @@ vs = VideoStream(src=1).start()
 # time.sleep(2.0)
 prev_frame_time = 0
 
-# Pose key start ADDED
-pose_key = 1
-
 # Store grades
 prev_grade = 0
 grade = 0
 ave_grade = [1 for i in range(27)]
+
+# Choose task
+grading_ver, class_ver = False, False
+
+# Pose key start ADDED
+pose_key = 1
 
 
 # Index page
@@ -57,23 +60,43 @@ def index():
 # Pose Classification Page
 @app.route('/opencam', methods=['GET', 'POST'])
 def index2():
-    answer = request.form['response']
+    global grading_ver, class_ver, pose_key
+    answer = False
+
+    if request.method == "POST":
+        if request.form.get('class') == "Classification":
+            class_ver = True
+            grading_ver = False
+            answer = True
+
+        elif request.form.get('grading') == "Grade":
+            pose_key = 1
+            grading_ver = True
+            class_ver = False
+            answer = True
+
+    elif request.method == "GET":
+        answer = True
+        return render_template('index.html', ans=answer)
+
     return render_template('index.html', ans=answer)
 
 
 # Read poses from camera input
 def camera():
-    global vs, outputFrame, lock, prev_frame_time, pose_key, grade, prev_grade, ave_grade
+    global vs, outputFrame, lock, prev_frame_time, pose_key, grade, prev_grade, ave_grade, grading_ver
     blur_end = False
     fnt = cv2.FONT_HERSHEY_DUPLEX
+    file_speed = 'speed.txt'
     # grab global references to the video stream, output frame, and
     # lock variables
 
     while True:
-        # print('Grade: ', grade, ' Prev grade: ', prev_grade)
-        # Pause 2 sec if pose passed
-        if prev_grade >= 75:
-            time.sleep(2.0)
+        if grading_ver:
+            # print('Grade: ', grade, ' Prev grade: ', prev_grade)
+            # Pause 2 sec if pose passed
+            if prev_grade >= 75:
+                time.sleep(2.0)
 
         # read the next frame from the video stream, resize it,
         frame = vs.read()
@@ -83,81 +106,98 @@ def camera():
         h, w, c = frame.shape
         # print('Height: ', h, 'Width: ', w)
 
-        # font color for grade
-        clr_grd = (0, 0, 255)
-
         start = time.time()
-        # added arg: pose key, added var: grade
-        frame, grade = pose_det(frame, detection_model, pose_key)
-        print('Pose classification prediction time: ', time.time() - start)
 
-        # Compute overall grade
-        ave_grade[pose_key] = grade
+        if grading_ver:
+            file_speed = "speed_grade.txt"
+            # added arg: pose key, added var: grade
+            frame, grade = pose_det(frame, detection_model, pose_key, grading_ver)
+        elif class_ver:
+            file_speed = "speed_classi.txt"
+            frame = pose_det(frame, detection_model)
 
-        # Threshold ADDED
-        # next pose when threshold is greater than 74
-        if grade >= 75:
-            clr_grd = (0, 255, 0)
+        end_time = time.time()
+        print('Pose classification prediction time: ', end_time - start)
 
-            # next pose key until 23rd pose
-            if pose_key < 26:
-                pose_key = pose_key + 1
-            else:
-                pose_key = 0
-                blur_end = True
+        if grading_ver:
+            # font color for grade
+            clr_grd = (0, 0, 255)
 
-        # Visualize grade
-        txt_grd = "Grade:" + str(grade)
-        txt_grdsz = cv2.getTextSize(txt_grd, fnt, 1.2, 2)[0]
+            # Compute overall grade
+            ave_grade[pose_key] = grade
 
-        frame = cv2.rectangle(frame, (w, 0), (w - txt_grdsz[0], txt_grdsz[1]), (255, 255, 255), cv2.FILLED)
-        frame = cv2.putText(frame, txt_grd, (w - txt_grdsz[0], txt_grdsz[1]), fnt, 1.2, clr_grd, 2,cv2.LINE_AA)
-        # print(str(pose_key) + " " + str(grade))
+            # Threshold ADDED
+            # next pose when threshold is greater than 74
+            if grade >= 75:
+                clr_grd = (0, 255, 0)
 
-        # Save prediction/classification time in text file
-        with open('speed.txt', 'a') as f:
-            f.write(str(time.time() - start) + ", ")
+                # next pose key until 23rd pose
+                if pose_key < 26:
+                    pose_key = pose_key + 1
+                else:
+                    pose_key = 0
+                    blur_end = True
 
-        # FPS
-        new_frame_time = time.time()
-        fps = int(1/(new_frame_time - prev_frame_time))
-        prev_frame_time = new_frame_time
-        fps = str(fps)
-        frame = cv2.putText(frame, "FPS: " + fps, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+            if pose_key > 0:
+                blur_end = False
+                # Visualize grade
+                txt_grd = "Grade:" + str(grade)
+                txt_grdsz = cv2.getTextSize(txt_grd, fnt, 1.2, 2)[0]
 
-        # Check whether the last pose is done
-        if blur_end:
-            # Blur video feed after completing 24 needed poses
-            overlay = frame.copy()
-            output = frame.copy()
-            overlay = cv2.rectangle(overlay, (0, 0), (w, h), (0, 0, 0), -1)
-            frame = cv2.addWeighted(overlay, 0.7, output, 0.3, 0, output)
+                frame = cv2.rectangle(frame, (w, 0), (w - txt_grdsz[0], txt_grdsz[1]), (255, 255, 255), cv2.FILLED)
+                frame = cv2.putText(frame, txt_grd, (w - txt_grdsz[0], txt_grdsz[1]), fnt, 1.2, clr_grd, 2, cv2.LINE_AA)
+                # print(str(pose_key) + " " + str(grade))
 
-            # Put text after completing all poses
-            txt1 = "YOU HAVE COMPLETED"
-            txt2 = "THE 24 BASIC TECHNIQUES OF ARNIS"
-            txt3 = "GRADE: " + str(round(mean(ave_grade[3:]), 2))
-            text_sz1 = cv2.getTextSize(txt1, fnt, 1, 2)[0]
-            text_sz2 = cv2.getTextSize(txt2, fnt, 1, 2)[0]
-            text_sz3 = cv2.getTextSize(txt3, fnt, 2, 2)[0]
+        if end_time - start > 0:
+            # Save prediction/classification time in text file
+            with open(file_speed, 'a') as f:
+                f.write(str(end_time - start) + ", ")
 
-            txtX1 = int((output.shape[1] - text_sz1[0]) / 2)
-            txtY1 = int(((output.shape[0] + text_sz1[1]) / 2) - (text_sz1[1] / 2))
+        try:
+            # FPS
+            new_frame_time = time.time()
+            fps = int(1/(new_frame_time - prev_frame_time))
+            prev_frame_time = new_frame_time
+            fps = str(fps)
+            frame = cv2.putText(frame, "FPS: " + fps, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+        except:
+            pass
 
-            txtX2 = int((output.shape[1] - text_sz2[0]) / 2)
-            txtY2 = int(((output.shape[0] + text_sz1[1]) / 2) + (text_sz1[1]))
+        if grading_ver:
+            # Store grade to another var
+            prev_grade = grade
+            # Check whether the last pose is done
+            if blur_end:
+                # Blur video feed after completing 24 needed poses
+                overlay = frame.copy()
+                output = frame.copy()
+                overlay = cv2.rectangle(overlay, (0, 0), (w, h), (0, 0, 0), -1)
+                frame = cv2.addWeighted(overlay, 0.7, output, 0.3, 0, output)
 
-            txtX3 = int((output.shape[1] - text_sz3[0]) / 2)
-            txtY3 = int(((output.shape[0] + text_sz1[1]) / 4))
+                # Put text after completing all poses
+                txt1 = "YOU HAVE COMPLETED"
+                txt2 = "THE 24 BASIC TECHNIQUES OF ARNIS"
+                txt3 = "GRADE: " + str(round(mean(ave_grade[3:]), 2))
+                text_sz1 = cv2.getTextSize(txt1, fnt, 1, 2)[0]
+                text_sz2 = cv2.getTextSize(txt2, fnt, 1, 2)[0]
+                text_sz3 = cv2.getTextSize(txt3, fnt, 2, 2)[0]
 
-            frame = cv2.putText(frame, txt1, (txtX1, txtY1), fnt, 1, (255, 255, 255), 2)
-            frame = cv2.putText(frame, txt2, (txtX2, txtY2), fnt, 1, (255, 255, 255), 2)
-            frame = cv2.putText(frame, txt3, (txtX3, txtY3), fnt, 2, (0, 255, 0), 2)
+                txtX1 = int((output.shape[1] - text_sz1[0]) / 2)
+                txtY1 = int(((output.shape[0] + text_sz1[1]) / 2) - (text_sz1[1] / 2))
+
+                txtX2 = int((output.shape[1] - text_sz2[0]) / 2)
+                txtY2 = int(((output.shape[0] + text_sz1[1]) / 2) + (text_sz1[1]))
+
+                txtX3 = int((output.shape[1] - text_sz3[0]) / 2)
+                txtY3 = int(((output.shape[0] + text_sz1[1]) / 4))
+
+                frame = cv2.putText(frame, txt1, (txtX1, txtY1), fnt, 1, (255, 255, 255), 2)
+                frame = cv2.putText(frame, txt2, (txtX2, txtY2), fnt, 1, (255, 255, 255), 2)
+                frame = cv2.putText(frame, txt3, (txtX3, txtY3), fnt, 2, (0, 255, 0), 2)
 
         # acquire the lock, set the output frame, and release the
         # lock
         with lock:
-            prev_grade = grade
             outputFrame = frame.copy()
 
 

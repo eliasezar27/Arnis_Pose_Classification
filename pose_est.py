@@ -2,7 +2,8 @@ import time
 
 import mediapipe as mp
 # from strikes import strike, joint_angles
-from pose_grade import strike, joint_angles
+from pose_grade import strike_grade, joint_angles
+from strikes import strike
 import tensorflow as tf
 from object_detection.utils import visualization_utils as viz_utils
 from object_detection.utils import label_map_util
@@ -32,7 +33,8 @@ def detect_fn(image, detection_model):
 
 
 # Method for classifying arnis poses {added: key}
-def pose_det(frame, model, key):
+def pose_det(frame, model, key=1, grading=False):
+    point_baston = -1
     # Uncomment flip to extract angles, visually
     # frame = cv2.flip(frame, 1)
     imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -70,10 +72,11 @@ def pose_det(frame, model, key):
     # joints_angles = joint_angles(joints, [(-1,-1),(-1,-1),(-1,-1),(-1,-1)])
     # frame = angle_vis(frame, joints, joints_angles)
 
-    # Apply pose classification method
-    # label, point_baston = strike(joints, bboxList)
-
-    label = arnis_poses[key]
+    if not grading:
+        # Apply pose classification method
+        label, point_baston = strike(joints, bboxList)
+    else:
+        label = arnis_poses[key]
 
     # Add text colors for each of the strikes and blocks
     color_text = (255, 0, 0) if 'Block' in label else (0, 255, 0)
@@ -84,12 +87,14 @@ def pose_det(frame, model, key):
     # frame = cv2.rectangle(frame, (0, h), (lab_len, h - 45), (255, 255, 255), cv2.FILLED)
     # frame = cv2.putText(frame, label, (1, h - 15), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_text, 2, cv2.LINE_AA)
 
-    tm_now = time.time()
-    dat_tm = time.localtime(tm_now)
-    print(dat_tm.tm_sec)
-    if dat_tm.tm_sec % 5 == 0:
-        grade, point_baston = strike(joints, bboxList, key)
+    if grading:
+        tm_now = time.time()
+        dat_tm = time.localtime(tm_now)
+        print(dat_tm.tm_sec)
+        if dat_tm.tm_sec % 5 == 0:
+            grade, point_baston = strike_grade(joints, bboxList, key)
 
+    if point_baston > -1:
         # Draw line for the baston
         frame = cv2.line(frame, joints[22], bboxList[point_baston], (70, 92, 105), 9) if (
                 22 in joints and bboxList[point_baston][0] >= 0 and bboxList[point_baston][1] >= 0) else frame
@@ -105,7 +110,10 @@ def pose_det(frame, model, key):
     frame = cv2.rectangle(frame, (0, h), (labX, h - labY - 20), (255, 255, 255), cv2.FILLED)
     frame = cv2.putText(frame, label, (2, h - 15), fnt, 1.2, color_text, 2, cv2.LINE_AA)
 
-    return frame, grade
+    if grading:
+        return frame, grade
+    else:
+        return frame
 
 
 def angle_det(frame):

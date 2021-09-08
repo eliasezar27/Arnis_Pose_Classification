@@ -20,7 +20,7 @@ def angle_calc(p0, p1, p2):
 
 
 # Ground Truths for each strikes
-def strike(part_line, bboxList, key):
+def strike_grade(part_line, bboxList, key):
 	grade = 0
 	kp_shown = 0 < [i in part_line for i in range(0, 34)].count(True) < 34
 	point_baston = 0

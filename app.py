@@ -62,14 +62,17 @@ def index():
 def index2():
     global grading_ver, class_ver, pose_key
     answer = False
+    ctgry = ""
 
     if request.method == "POST":
         if request.form.get('class') == "Classification":
+            ctgry = "CLASSIFICATION"
             class_ver = True
             grading_ver = False
             answer = True
 
         elif request.form.get('grading') == "Grade":
+            ctgry = "GRADING"
             pose_key = 1
             grading_ver = True
             class_ver = False
@@ -79,7 +82,7 @@ def index2():
         answer = True
         return render_template('index.html', ans=answer)
 
-    return render_template('index.html', ans=answer)
+    return render_template('index.html', ans=answer, categ=ctgry)
 
 
 # Read poses from camera input
@@ -88,6 +91,7 @@ def camera():
     blur_end = False
     fnt = cv2.FONT_HERSHEY_DUPLEX
     file_speed = 'speed.txt'
+    end_time, start = 0, 0
     # grab global references to the video stream, output frame, and
     # lock variables
 
@@ -106,19 +110,19 @@ def camera():
         h, w, c = frame.shape
         # print('Height: ', h, 'Width: ', w)
 
-        start = time.time()
-
         if grading_ver:
             file_speed = "speed_grade.txt"
             # added arg: pose key, added var: grade
+            start = time.time()
             frame, grade = pose_det(frame, detection_model, pose_key, grading_ver)
+            end_time = time.time()
         elif class_ver:
             file_speed = "speed_classi.txt"
+            start = time.time()
             frame = pose_det(frame, detection_model)
+            end_time = time.time()
 
-        end_time = time.time()
-        print('Pose classification prediction time: ', end_time - start)
-
+        # Run if grading method
         if grading_ver:
             # font color for grade
             clr_grd = (0, 0, 255)
@@ -148,10 +152,12 @@ def camera():
                 frame = cv2.putText(frame, txt_grd, (w - txt_grdsz[0], txt_grdsz[1]), fnt, 1.2, clr_grd, 2, cv2.LINE_AA)
                 # print(str(pose_key) + " " + str(grade))
 
-        if end_time - start > 0:
-            # Save prediction/classification time in text file
-            with open(file_speed, 'a') as f:
-                f.write(str(end_time - start) + ", ")
+        if grading_ver or class_ver:
+            if end_time - start > 0:
+                print('Pose classification prediction time: ', end_time - start)
+                # Save prediction/classification time in text file
+                with open(file_speed, 'a') as f:
+                    f.write(str(end_time - start) + ", ")
 
         try:
             # FPS

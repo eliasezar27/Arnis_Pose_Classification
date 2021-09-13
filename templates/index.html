@@ -5,16 +5,46 @@
   <body>
   <center>
     {% if ans %}
-    <h1>ARNIS DETECTION</h1>
+
+    <h1>ARNIS {{categ}}</h1>
+    <button onclick="location.href='/'"> Go back </button>
+    <br>
     <img src="{{ url_for('video_feed') }}" alt = "Camera is Loading...">
+    <br>
+    <form>
+      <h5>Dominant hand:</h5>
+
+        <input type="radio" id="right" name="rdo" value="right" checked="TRUE">
+        <label for="right">Right Hand</label>
+
+        <input type="radio" id="left" name="rdo" value="left">
+        <label for="left">Left Hand</label>
+
+      <h5>Developer Options:</h5>
+
+
+        <input type="checkbox" id="skeleton" name="skeleton" value="skeleton">
+        <label for="skeleton">Show skeleton</label>
+
+        <input type="checkbox" id="fps" name="fps" value="fps">
+        <label for="fps">Show FPS</label>
+
+        <input type="checkbox" id="angles" name="angles" value="angles">
+        <label for="angles">Show joint angles</label>
+
+    </form>
+
     {% else %}
+
     <h1>Select Method</h1>
     <form method="POST" action="{{url_for('index2')}}">
+
       <!--<input type="text" name="response" value="yes" hidden>-->
       <br><input type='submit' name="class" value="Classification" />
           <input type='submit' name="grading" value="Grade" />
 
     </form>
+
     {% endif %}
   </center>
   </body>

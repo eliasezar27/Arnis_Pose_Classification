@@ -185,7 +185,7 @@ def det_baston(frame, model):
 
     start = time.time()
     detections = detect_fn(input_tensor, model)
-    print('first detection time:', time.time() - start)
+    # print('first detection time:', time.time() - start)
 
     num_detections = int(detections.pop('num_detections'))
     detections = {key: value[0, :num_detections].numpy()

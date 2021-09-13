@@ -24,6 +24,7 @@ def strike_grade(part_line, bboxList, key):
 	grade = 0
 	kp_shown = 0 < [i in part_line for i in range(0, 34)].count(True) < 34
 	point_baston = 0
+	overall = 0
 
 	if kp_shown:
 
@@ -74,8 +75,6 @@ def strike_grade(part_line, bboxList, key):
 			if not l_wrist_up:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Handa
 		elif key == 2:
 			overall = 6
@@ -97,8 +96,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if not l_wrist_up:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# Left Temple
 		elif key == 3:
@@ -131,8 +128,6 @@ def strike_grade(part_line, bboxList, key):
 			if bbox_index == 2:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Right Temple
 		elif key == 4:
 			overall = 9
@@ -163,8 +158,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if bbox_index == 1:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# Left Shoulder
 		elif key == 5:
@@ -197,8 +190,6 @@ def strike_grade(part_line, bboxList, key):
 			if bbox_index == 2:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Right Shoulder
 		elif key == 6:
 			overall = 9
@@ -230,8 +221,6 @@ def strike_grade(part_line, bboxList, key):
 			if bbox_index == 1:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Stomach Thrust
 		elif key == 7:
 			overall = 8
@@ -259,8 +248,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if not lw_near_ls:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# Left Chest Thrust
 		elif key == 8:
@@ -290,8 +277,6 @@ def strike_grade(part_line, bboxList, key):
 			if not lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Right Chest Thrust
 		elif key == 9:
 			overall = 8
@@ -319,8 +304,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if not lw_near_ls:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# Right Leg Strike
 		elif key == 10:
@@ -350,8 +333,6 @@ def strike_grade(part_line, bboxList, key):
 			if not lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Left Leg Strike
 		elif key == 11:
 			overall = 8
@@ -379,8 +360,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if not lw_near_ls:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# Left Eye Thrust
 		elif key == 12:
@@ -410,8 +389,6 @@ def strike_grade(part_line, bboxList, key):
 			if not lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Right Eye Thrust
 		elif key == 13:
 			overall = 8
@@ -440,8 +417,6 @@ def strike_grade(part_line, bboxList, key):
 			if not lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Crown Strike
 		elif key == 14:
 			overall = 6
@@ -463,8 +438,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if not l_wrist_up:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# BLOCKING TECHNIQUES ------------------------------------------------------------------------------------>
 
@@ -496,8 +469,6 @@ def strike_grade(part_line, bboxList, key):
 			if lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Right Temple Block
 		elif key == 16:
 			overall = 8
@@ -526,8 +497,6 @@ def strike_grade(part_line, bboxList, key):
 			if not lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Left Shoulder Block
 		elif key == 17:
 			overall = 8
@@ -555,8 +524,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if lw_near_ls:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# elif r_elbow > 140 and r_shoulder in range(75, 90) and l_elbow > 140 and l_shoulder > 150 and not r_wrist_up and l_wrist_up and not rw_near_rs and not lw_near_ls:
 
@@ -588,8 +555,6 @@ def strike_grade(part_line, bboxList, key):
 			if not lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Stomach Thrust Block
 		elif key == 19:
 			overall = 8
@@ -617,8 +582,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if lw_near_ls:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# Left Chest Block
 		elif key == 20:
@@ -648,8 +611,6 @@ def strike_grade(part_line, bboxList, key):
 			if lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Right Chest Block
 		elif key == 21:
 			overall = 8
@@ -677,8 +638,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if not lw_near_ls:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# Right Leg Block
 		elif key == 22:
@@ -708,8 +667,6 @@ def strike_grade(part_line, bboxList, key):
 			if lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Left Leg Block
 		elif key == 23:
 			overall = 8
@@ -737,8 +694,6 @@ def strike_grade(part_line, bboxList, key):
 
 			if lw_near_ls:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
 
 		# Left Eye Block
 		elif key == 24:
@@ -768,8 +723,6 @@ def strike_grade(part_line, bboxList, key):
 			if lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Right Eye Block
 		elif key == 25:
 			overall = 8
@@ -798,8 +751,6 @@ def strike_grade(part_line, bboxList, key):
 			if not lw_near_ls:
 				grade += 1
 
-			grade = round((grade / overall) * 100, 2)
-
 		# Rising Block
 		elif key == 26:
 			overall = 6
@@ -821,8 +772,10 @@ def strike_grade(part_line, bboxList, key):
 
 			if l_wrist_up:
 				grade += 1
-
-			grade = round((grade / overall) * 100, 2)
+	try:
+		grade = round((grade / overall) * 100, 2)
+	except:
+		grade = 0
 
 	return grade, point_baston
 

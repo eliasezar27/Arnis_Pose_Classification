@@ -42,7 +42,7 @@ prev_frame_time = 0
 # Store grades
 prev_grade = 0
 grade = 0
-ave_grade = [1 for i in range(27)]
+ave_grade = [0 for i in range(27)]
 
 # Choose task
 grading_ver, class_ver = False, False
@@ -58,10 +58,9 @@ def index():
 
 
 # Pose Classification Page
-@app.route('/opencam', methods=['GET', 'POST'])
-def index2():
+@app.route('/arnis-pose', methods=['GET', 'POST'])
+def process():
     global grading_ver, class_ver, pose_key
-    answer = False
     ctgry = ""
 
     if request.method == "POST":
@@ -69,20 +68,26 @@ def index2():
             ctgry = "CLASSIFICATION"
             class_ver = True
             grading_ver = False
-            answer = True
 
         elif request.form.get('grading') == "Grade":
             ctgry = "GRADING"
             pose_key = 1
             grading_ver = True
             class_ver = False
-            answer = True
 
     elif request.method == "GET":
-        answer = True
-        return render_template('index.html', ans=answer)
+        return render_template('process.html')
 
-    return render_template('index.html', ans=answer, categ=ctgry)
+    return render_template('process.html', categ=ctgry)
+
+
+# Pose Grading Results Page
+@app.route('/pose-grading-result', methods=['GET', 'POST'])
+def results():
+    global ave_grade
+    grade_res = ave_grade[:]
+
+    return render_template('results.html', resGrade=grade_res)
 
 
 # Read poses from camera input
@@ -151,6 +156,10 @@ def camera():
                 frame = cv2.rectangle(frame, (w, 0), (w - txt_grdsz[0], txt_grdsz[1]), (255, 255, 255), cv2.FILLED)
                 frame = cv2.putText(frame, txt_grd, (w - txt_grdsz[0], txt_grdsz[1]), fnt, 1.2, clr_grd, 2, cv2.LINE_AA)
                 # print(str(pose_key) + " " + str(grade))
+
+            if grade >= 75:
+                # Save frame of pose done by user
+                cv2.imwrite('static/' + str(pose_key - 1) + '.jpg', frame)
 
         if grading_ver or class_ver:
             if end_time - start > 0:

@@ -1,0 +1,223 @@
+<html>
+<head>
+  <title>Arnis Pose Grading Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/gradeResult.css') }}">
+</head>
+<body>
+
+  <h1>Detailed Pose Results</h1>
+  <button onclick="location.href='/'"> Go back </button>
+  <div class="row">
+
+    <!-- ARNIS STRIKES -------------------------------------------------------------------------------->
+    <div class="column" style="background-color:#aaa;">
+      <h2>Arnis Strikes</h2>
+
+      <!-- Left Temple Strike -->
+      {% if resGrade[3] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='3.jpg') }}" alt="Image did not load" width="300">
+          Left Temple Strike: {{ resGrade[3] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Temple Strike -->
+      {% if resGrade[4] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='4.jpg') }}" alt="Image did not load" width="300">
+          Right Temple Strike: {{ resGrade[4] }}
+        </p>
+      {% endif %}
+
+      <!-- Left Arm/Shoulder Strike -->
+      {% if resGrade[5] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='5.jpg') }}" alt="Image did not load" width="300">
+          Left Arm/Shoulder Strike: {{ resGrade[5] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Arm/Shoulder Strike -->
+      {% if resGrade[6] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='6.jpg') }}" alt="Image did not load" width="300">
+          Right Arm/Shoulder Strike: {{ resGrade[6] }}
+        </p>
+      {% endif %}
+
+      <!-- Stomach Thrust -->
+      {% if resGrade[7] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='7.jpg') }}" alt="Image did not load" width="300">
+          Stomach Thrust: {{ resGrade[7] }}
+        </p>
+      {% endif %}
+
+      <!-- Left Chest Thrust -->
+      {% if resGrade[8] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='8.jpg') }}" alt="Image did not load" width="300">
+          Left Chest Thrust: {{ resGrade[8] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Chest Thrust -->
+      {% if resGrade[9] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='9.jpg') }}" alt="Image did not load" width="300">
+          Right Chest Thrust: {{ resGrade[9] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Knee/Leg Strike -->
+      {% if resGrade[10] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='10.jpg') }}" alt="Image did not load" width="300">
+          Right Knee/Leg Strike: {{ resGrade[10] }}
+        </p>
+      {% endif %}
+
+      <!-- Left Knee/Leg Strike -->
+      {% if resGrade[11] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='11.jpg') }}" alt="Image did not load" width="300">
+          Left Knee/Leg Strike: {{ resGrade[11] }}
+        </p>
+      {% endif %}
+
+      <!-- Left Eye Thrust -->
+      {% if resGrade[12] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='12.jpg') }}" alt="Image did not load" width="300">
+          Left Eye Thrust: {{ resGrade[12] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Eye Thrust -->
+      {% if resGrade[13] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='13.jpg') }}" alt="Image did not load" width="300">
+          Right Eye Thrust: {{ resGrade[13] }}
+        </p>
+      {% endif %}
+
+      <!-- Crown Strike -->
+      {% if resGrade[14] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='14.jpg') }}" alt="Image did not load" width="300">
+          Crown Strike: {{ resGrade[14] }}
+        </p>
+      {% endif %}
+
+    </div>
+
+    <!-- ARNIS BLOCK -------------------------------------------------------------------------------->
+    <div class="column" style="background-color:#bbb;">
+      <h2>Arnis Blocks</h2>
+
+      <!-- Left Temple Block -->
+      {% if resGrade[15] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='15.jpg') }}" alt="Image did not load" width="300">
+          Left Temple Block: {{ resGrade[15] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Temple Block -->
+      {% if resGrade[16] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='16.jpg') }}" alt="Image did not load" width="300">
+          Right Temple Block: {{ resGrade[16] }}
+        </p>
+      {% endif %}
+
+      <!-- Left Arm/Shoulder Block -->
+      {% if resGrade[17] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='17.jpg') }}" alt="Image did not load" width="300">
+          Left Arm/Shoulder Block: {{ resGrade[17] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Arm/Shoulder Block -->
+      {% if resGrade[18] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='18.jpg') }}" alt="Image did not load" width="300">
+          Right Arm/Shoulder Block: {{ resGrade[18] }}
+        </p>
+      {% endif %}
+
+      <!-- Stomach Thrust Block -->
+      {% if resGrade[19] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='19.jpg') }}" alt="Image did not load" width="300">
+          Stomach Thrust Block: {{ resGrade[19] }}
+        </p>
+      {% endif %}
+
+      <!-- Left Chest Block -->
+      {% if resGrade[20] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='20.jpg') }}" alt="Image did not load" width="300">
+          Left Chest Block: {{ resGrade[20] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Chest Block -->
+      {% if resGrade[21] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='21.jpg') }}" alt="Image did not load" width="300">
+          Right Chest Block: {{ resGrade[21] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Knee/Leg Block -->
+      {% if resGrade[22] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='22.jpg') }}" alt="Image did not load" width="300">
+          Right Knee/Leg Block: {{ resGrade[22] }}
+        </p>
+      {% endif %}
+
+      <!-- Left Knee/Leg Block -->
+      {% if resGrade[23] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='23.jpg') }}" alt="Image did not load" width="300">
+          Left Knee/Leg Block: {{ resGrade[23] }}
+        </p>
+      {% endif %}
+
+      <!-- Left Eye Block -->
+      {% if resGrade[24] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='24.jpg') }}" alt="Image did not load" width="300">
+          Left Eye Block: {{ resGrade[24] }}
+        </p>
+      {% endif %}
+
+      <!-- Right Eye Block -->
+      {% if resGrade[25] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='25.jpg') }}" alt="Image did not load" width="300">
+          Right Eye Block: {{ resGrade[25] }}
+        </p>
+      {% endif %}
+
+      <!-- Rising Block -->
+      {% if resGrade[26] > 0 %}
+        <p>
+          <img src="{{ url_for('static', filename='-1.jpg') }}" alt="Image did not load" width="300">
+          Rising Block: {{ resGrade[26] }}
+        </p>
+      {% endif %}
+
+    </div>
+
+  </div>
+
+
+</body>
+<script>
+  window.scrollTo(0,document.body.scrollHeight);
+</script>
+</html>

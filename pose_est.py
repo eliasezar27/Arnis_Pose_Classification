@@ -33,10 +33,11 @@ def detect_fn(image, detection_model):
 
 
 # Method for classifying arnis poses {added: key}
-def pose_det(frame, model, key=1, grading=False):
+def pose_det(frame, model, shwSkltn, s_angle, key=1, grading=False):
     point_baston = -1
     # Uncomment flip to extract angles, visually
     # frame = cv2.flip(frame, 1)
+
     imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     grade = 0
@@ -52,8 +53,10 @@ def pose_det(frame, model, key=1, grading=False):
     joints = {}
     # Check if there's a detection
     if results.pose_landmarks:
-        # Draw landmark keypoints with edges
-        mpDraw.draw_landmarks(frame, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
+
+        if shwSkltn:
+            # Draw landmark keypoints with edges
+            mpDraw.draw_landmarks(frame, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
 
         # Iterates thru all the landmarks using joints id and its corresponding coordinates
         for jt_id, lm in enumerate(results.pose_landmarks.landmark):
@@ -69,8 +72,9 @@ def pose_det(frame, model, key=1, grading=False):
                 # print(jt_id, cx, cy, 'th: ', thr)
 
     # Uncomment to visualize joints angles in the image
-    # joints_angles = joint_angles(joints, [(-1,-1),(-1,-1),(-1,-1),(-1,-1)])
-    # frame = angle_vis(frame, joints, joints_angles)
+    if s_angle:
+        joints_angles = joint_angles(joints, [(-1, -1), (-1, -1), (-1, -1), (-1, -1)])
+        frame = angle_vis(frame, joints, joints_angles)
 
     if not grading:
         # Apply pose classification method
@@ -81,12 +85,6 @@ def pose_det(frame, model, key=1, grading=False):
     # Add text colors for each of the strikes and blocks
     color_text = (255, 0, 0) if 'Block' in label else (0, 255, 0)
 
-    # old: Draw line for the baston
-
-    # frame = cv2.flip(frame, 1)
-    # frame = cv2.rectangle(frame, (0, h), (lab_len, h - 45), (255, 255, 255), cv2.FILLED)
-    # frame = cv2.putText(frame, label, (1, h - 15), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_text, 2, cv2.LINE_AA)
-
     if grading:
         tm_now = time.time()
         dat_tm = time.localtime(tm_now)
@@ -95,11 +93,12 @@ def pose_det(frame, model, key=1, grading=False):
             grade, point_baston = strike_grade(joints, bboxList, key)
 
     if point_baston > -1:
-        # Draw line for the baston
-        frame = cv2.line(frame, joints[22], bboxList[point_baston], (70, 92, 105), 9) if (
-                22 in joints and bboxList[point_baston][0] >= 0 and bboxList[point_baston][1] >= 0) else frame
-        # Draw the end point of the baston from the wrist
-        frame = cv2.circle(frame, bboxList[point_baston], 10, (0, 0, 255), -1)
+        if shwSkltn:
+            # Draw line for the baston
+            frame = cv2.line(frame, joints[22], bboxList[point_baston], (70, 92, 105), 9) if (
+                    22 in joints and bboxList[point_baston][0] >= 0 and bboxList[point_baston][1] >= 0) else frame
+            # Draw the end point of the baston from the wrist
+            frame = cv2.circle(frame, bboxList[point_baston], 10, (0, 0, 255), -1)
 
     fnt = cv2.FONT_HERSHEY_DUPLEX
     lab_sz = cv2.getTextSize(label, fnt, 1.2, 2)[0]
@@ -183,7 +182,7 @@ def det_baston(frame, model):
 
     input_tensor = tf.convert_to_tensor(np.expand_dims(image_np, 0), dtype=tf.float32)
 
-    start = time.time()
+    # start = time.time()
     detections = detect_fn(input_tensor, model)
     # print('first detection time:', time.time() - start)
 

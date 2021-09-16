@@ -12,6 +12,7 @@ from object_detection.utils import config_util
 import os
 from object_detection.builders import model_builder
 import cv2
+
 CONFIG_PATH = "training_v2/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8.config"
 
 # Load pipeline config and build a detection model
@@ -50,6 +51,12 @@ grading_ver, class_ver = False, False
 # Pose key start ADDED
 pose_key = 1
 
+# Developer Options
+ctgry = ""
+skltn = False
+shwFPS = False
+shwAngl = False
+
 
 # Index page
 @app.route('/', methods=['GET', 'POST'])
@@ -60,8 +67,7 @@ def index():
 # Pose Classification Page
 @app.route('/arnis-pose', methods=['GET', 'POST'])
 def process():
-    global grading_ver, class_ver, pose_key
-    ctgry = ""
+    global grading_ver, class_ver, pose_key, skltn, ctgry, shwFPS, shwAngl
 
     if request.method == "POST":
         if request.form.get('class') == "Classification":
@@ -75,10 +81,35 @@ def process():
             grading_ver = True
             class_ver = False
 
+        # Dominant Hand options
+        if request.form.get('right_h') == "Right Hand":
+            pass
+
+        if request.form.get('left_h') == "Left Hand":
+            pass
+
+        # Dev Options
+
+        # Skeleton option
+        if request.form.get('skeleton') == "Show Skeleton":
+            skltn = True
+        elif request.form.get('skeleton2') == "Hide Skeleton":
+            skltn = False
+
+        if request.form.get('fps') == "Show FPS":
+            shwFPS = True
+        elif request.form.get('fps2') == "Hide FPS":
+            shwFPS = False
+
+        if request.form.get('angle') == "Show Angles":
+            shwAngl = True
+        elif request.form.get('angle2') == "Hide Angles":
+            shwAngl = False
+
     elif request.method == "GET":
         return render_template('process.html')
 
-    return render_template('process.html', categ=ctgry)
+    return render_template('process.html', categ=ctgry, skeleton=skltn, fps=shwFPS, angles=shwAngl)
 
 
 # Pose Grading Results Page
@@ -92,7 +123,7 @@ def results():
 
 # Read poses from camera input
 def camera():
-    global vs, outputFrame, lock, prev_frame_time, pose_key, grade, prev_grade, ave_grade, grading_ver
+    global vs, outputFrame, lock, prev_frame_time, pose_key, grade, prev_grade, ave_grade, grading_ver, skltn, shwAngl
     blur_end = False
     fnt = cv2.FONT_HERSHEY_DUPLEX
     file_speed = 'speed.txt'
@@ -119,12 +150,12 @@ def camera():
             file_speed = "speed_grade.txt"
             # added arg: pose key, added var: grade
             start = time.time()
-            frame, grade = pose_det(frame, detection_model, pose_key, grading_ver)
+            frame, grade = pose_det(frame, detection_model, skltn, shwAngl, pose_key, grading_ver)
             end_time = time.time()
         elif class_ver:
             file_speed = "speed_classi.txt"
             start = time.time()
-            frame = pose_det(frame, detection_model)
+            frame = pose_det(frame, detection_model, skltn, shwAngl)
             end_time = time.time()
 
         # Run if grading method
@@ -169,12 +200,13 @@ def camera():
                     f.write(str(end_time - start) + ", ")
 
         try:
-            # FPS
-            new_frame_time = time.time()
-            fps = int(1/(new_frame_time - prev_frame_time))
-            prev_frame_time = new_frame_time
-            fps = str(fps)
-            frame = cv2.putText(frame, "FPS: " + fps, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+            if shwFPS:
+                # FPS
+                new_frame_time = time.time()
+                fps = int(1/(new_frame_time - prev_frame_time))
+                prev_frame_time = new_frame_time
+                fps = str(fps)
+                frame = cv2.putText(frame, "FPS: " + fps, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
         except:
             pass
 

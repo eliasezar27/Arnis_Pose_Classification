@@ -1,46 +1,62 @@
 <html>
-  <head>
-    <title>Arnis Pose Detection</title>
-  </head>
-  <body>
-  <center>
+<head>
+  <title>Arnis Pose Detection</title>
+</head>
+<body>
+<center>
 
-    <h1>ARNIS {{categ}}</h1>
-    <button onclick="location.href='/'"> Go back </button>
-    <br>
-    <img src="{{ url_for('video_feed') }}" alt = "Camera is Loading...">
-    {% if categ == "GRADING" %}
-      <br>
-      <form method="POST" action="{{url_for('results')}}">
-        <input type="submit" name="result" value="Detailed Pose Results">
-      </form>
+  <h1>ARNIS {{categ}}</h1>
+  <button onclick="location.href='/'"> Go back </button>
+  <br>
+  <img src="{{ url_for('video_feed') }}" alt = "Camera is Loading...">
+  {% if categ == "GRADING" %}
+  <br>
+  <form method="POST" action="{{url_for('results')}}">
+    <input type="submit" name="result" value="Detailed Pose Results">
+  </form>
+  {% endif %}
+  <br>
+  <form method="POST" action="{{url_for('process')}}">
+    <h5>Dominant hand:</h5>
+
+    <input type='submit' name="right_h" value="Right Hand" />
+    <!-- <input type="radio" id="right" name="rdo" value="right" checked="TRUE">
+    <label for="right">Right Hand</label> -->
+
+    <input type='submit' name="left_h" value="Left Hand" />
+    <!-- <input type="radio" id="left" name="rdo" value="left">
+    <label for="left">Left Hand</label> -->
+
+    <h5>Developer Options:</h5>
+
+    {% if not skeleton %}
+    <input type='submit' name="skeleton" value="Show Skeleton" />
+    <!-- <input type="checkbox" id="skeleton" name="skeleton" value="skeleton">
+    <label for="skeleton">Show skeleton</label> -->
+    {% else %}
+    <input type='submit' name="skeleton2" value="Hide Skeleton" />
     {% endif %}
-    <br>
-    <form>
-      <h5>Dominant hand:</h5>
 
-        <input type="radio" id="right" name="rdo" value="right" checked="TRUE">
-        <label for="right">Right Hand</label>
+    {% if not fps %}
+    <input type='submit' name="fps" value="Show FPS" />
+    <!-- <input type="checkbox" id="fps" name="fps" value="fps">
+    <label for="fps">Show FPS</label> -->
+    {% else %}
+    <input type='submit' name="fps2" value="Hide FPS" />
+    {% endif %}
 
-        <input type="radio" id="left" name="rdo" value="left">
-        <label for="left">Left Hand</label>
+    {% if not angles %}
+    <input type='submit' name="angle" value="Show Angles" />
+    <!-- <input type="checkbox" id="angles" name="angles" value="angles">
+    <label for="angles">Show joint angles</label> -->
+    {% else %}
+    <input type='submit' name="angle2" value="Hide Angles" />
+    {% endif %}
 
-      <h5>Developer Options:</h5>
+  </form>
+</center>
 
-
-        <input type="checkbox" id="skeleton" name="skeleton" value="skeleton">
-        <label for="skeleton">Show skeleton</label>
-
-        <input type="checkbox" id="fps" name="fps" value="fps">
-        <label for="fps">Show FPS</label>
-
-        <input type="checkbox" id="angles" name="angles" value="angles">
-        <label for="angles">Show joint angles</label>
-
-    </form>
-  </center>
-
-  </body>
+</body>
 <script>
   window.scrollTo(0,document.body.scrollHeight);
 </script>

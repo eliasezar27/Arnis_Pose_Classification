@@ -71,11 +71,6 @@ def pose_det(frame, model, shwSkltn, s_angle, key=1, grading=False):
                 joints[jt_id] = (cx, cy)
                 # print(jt_id, cx, cy, 'th: ', thr)
 
-    # Uncomment to visualize joints angles in the image
-    if s_angle:
-        joints_angles = joint_angles(joints, [(-1, -1), (-1, -1), (-1, -1), (-1, -1)])
-        frame = angle_vis(frame, joints, joints_angles)
-
     if not grading:
         # Apply pose classification method
         label, point_baston = strike(joints, bboxList)
@@ -106,6 +101,9 @@ def pose_det(frame, model, shwSkltn, s_angle, key=1, grading=False):
     labY = int(lab_sz[1])
 
     frame = cv2.flip(frame, 1)
+    if s_angle:
+        joints_angles = joint_angles(joints, [(-1, -1), (-1, -1), (-1, -1), (-1, -1)])
+        frame = angle_vis(frame, joints, joints_angles)
     frame = cv2.rectangle(frame, (0, h), (labX, h - labY - 20), (255, 255, 255), cv2.FILLED)
     frame = cv2.putText(frame, label, (2, h - 15), fnt, 1.2, color_text, 2, cv2.LINE_AA)
 
@@ -140,36 +138,54 @@ def angle_det(frame):
 
 
 def angle_vis(frame, joints, joints_angles):
+    h, w, c = frame.shape
+
     if 14 in joints:
-        frame = cv2.putText(frame, str(joints_angles['right elbow']), joints[14], cv2.FONT_HERSHEY_SIMPLEX, 1,
+        x, y = joints[14]
+        x = w - x - 1
+        frame = cv2.putText(frame, str(joints_angles['right elbow']), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
                             (246, 255, 0), 2, cv2.LINE_AA)
 
     if 12 in joints:
-        frame = cv2.putText(frame, str(joints_angles['right shoulder']), joints[12], cv2.FONT_HERSHEY_SIMPLEX, 1,
+        x, y = joints[12]
+        x = w - x - 1
+        frame = cv2.putText(frame, str(joints_angles['right shoulder']), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
                             (246, 255, 0), 2, cv2.LINE_AA)
 
     if 24 in joints:
-        frame = cv2.putText(frame, str(joints_angles['right hip']), joints[24], cv2.FONT_HERSHEY_SIMPLEX, 1,
+        x, y = joints[24]
+        x = w - x - 1
+        frame = cv2.putText(frame, str(joints_angles['right hip']), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
                             (246, 255, 0), 2, cv2.LINE_AA)
 
     if 26 in joints:
-        frame = cv2.putText(frame, str(joints_angles['right knee']), joints[26], cv2.FONT_HERSHEY_SIMPLEX, 1,
+        x, y = joints[26]
+        x = w - x - 1
+        frame = cv2.putText(frame, str(joints_angles['right knee']), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
                             (246, 255, 0), 2, cv2.LINE_AA)
 
     if 13 in joints:
-        frame = cv2.putText(frame, str(joints_angles['left elbow']), joints[13], cv2.FONT_HERSHEY_SIMPLEX, 1,
+        x, y = joints[13]
+        x = w - x - 1
+        frame = cv2.putText(frame, str(joints_angles['left elbow']), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
                             (246, 255, 0), 2, cv2.LINE_AA)
 
     if 11 in joints:
-        frame = cv2.putText(frame, str(joints_angles['left shoulder']), joints[11], cv2.FONT_HERSHEY_SIMPLEX, 1,
+        x, y = joints[11]
+        x = w - x - 1
+        frame = cv2.putText(frame, str(joints_angles['left shoulder']), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
                             (246, 255, 0), 2, cv2.LINE_AA)
 
     if 23 in joints:
-        frame = cv2.putText(frame, str(joints_angles['left hip']), joints[23], cv2.FONT_HERSHEY_SIMPLEX, 1,
+        x, y = joints[23]
+        x = w - x - 1
+        frame = cv2.putText(frame, str(joints_angles['left hip']), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
                             (246, 255, 0), 2, cv2.LINE_AA)
 
     if 25 in joints:
-        frame = cv2.putText(frame, str(joints_angles['left knee']), joints[25], cv2.FONT_HERSHEY_SIMPLEX, 1,
+        x, y = joints[25]
+        x = w - x - 1
+        frame = cv2.putText(frame, str(joints_angles['left knee']), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
                             (246, 255, 0), 2, cv2.LINE_AA)
 
     return frame

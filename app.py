@@ -127,6 +127,18 @@ def about():
     return render_template('about.html')
 
 
+# Pose Description page
+@app.route('/pose-desc', methods=['GET', 'POST'])
+def poseDesc():
+    return render_template('poseDesc.html')
+
+
+# Instruction page
+@app.route('/how-to-use', methods=['GET', 'POST'])
+def instruction():
+    return render_template('instruction.html')
+
+
 # Read poses from camera input
 def camera():
     global vs, outputFrame, lock, prev_frame_time, pose_key, grade, prev_grade, ave_grade, grading_ver, skltn, shwAngl

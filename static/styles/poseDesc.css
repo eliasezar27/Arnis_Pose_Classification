@@ -1,20 +1,25 @@
-*{
-    font-family: Helvetica;
-    box-sizing: border-box;
+* {
+  box-sizing: border-box;
+  font-family: Helvetica;
 }
 
 /* Create two equal columns that floats next to each other */
-.column {
+.column, .column2 {
   float: left;
   width: 50%;
   padding: 10px;
 }
 
-.column2 {
+.column3 {
   float: left;
-  width: 40%;
+  width: 30%;
   padding: 10px;
-  padding-left: 50px;
+}
+
+.column4 {
+  float: left;
+  width: 70%;
+  padding-top: 10px;
 }
 
 /* Clear floats after the columns */
@@ -26,6 +31,7 @@
 
 body{
     background-color: #a0522d;
+     color: #ffffff;
 }
 
 nav{
@@ -57,7 +63,7 @@ li a {
     text-decoration: none;
 	}
 
-li a:hover:not(.hActive) {
+li a:hover:not(.hActive), .column2 {
     background-color: #663300;
     }
 
@@ -65,41 +71,8 @@ li a:hover:not(.hActive) {
     border-bottom: 3.5px solid white;
 	}
 
-h1, .sub, h5{
-    color: #ffffff;
-    }
-
-.sub{
-    text-align: center;
-    font-size: 20px;
+img{
+    height: 300px;
+    border-radius: 10%;
+    box-shadow: -7px -7px #dba800;
 }
-
-.button {
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    outline: none;
-    color: #fff;
-    background-color: #a87d26;
-    border: none;
-    border-radius: 6px;
-    box-shadow: 0 5px #dba800;
-    margin-left: 5px;
-	}
-
-.button:hover {
-    background-color: #663300
-    }
-
-.button:active {
-    background-color: #3e8e41;
-    box-shadow: 0 3px #666;
-    transform: translateY(4px);
-}
-
-hr{
-    height: 3px;
-    width: 100%
-    color: #ffffff;
-    background-color: #ffffff;
-    }

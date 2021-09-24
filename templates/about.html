@@ -3,13 +3,14 @@
 <head>
     <title>About</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/about.css') }}" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}" />
 </head>
 <body>
 <nav>
   <ul class="nav">
-    <li><a href="#" style="margin-right: 100px;">How to use</a></li>
-    <li><a href="#">Pose Description</a></li>
-    <li><a href="#" class="hActive">About</a></li>
+    <li><a href="{{ url_for('instruction') }}" style="margin-right: 100px;">How to use</a></li>
+    <li><a href="{{ url_for('poseDesc') }}">Pose Description</a></li>
+    <li><a href="{{ url_for('about') }}" class="hActive">About</a></li>
     <li><a href="{{ url_for('index') }}">Home</a></li>
   </ul>
 </nav>
@@ -22,29 +23,126 @@
 
   <!------FIRST COLUMN----------------------------------------->
   <div class="column">
+
+    <h2 style="color: #6699ff; margin-left: 15%;">
+      Title
+    </h2>
+    <h2 style="margin-left: 15%;">
+      A Real-time Basic Arnis Striking and Blocking <br>
+      Pose Classification Model Utilizing <br>
+      <a href="https://google.github.io/mediapipe/solutions/pose.html"> Mediapipe Blazepose   </a>
+    </h2>
+
+
     <br style="display:block; margin-top:200px; line-height:200px;">
+
+    <h2 style="color: #6699ff; margin-left: 15%;">
+      Abstract
+    </h2>
+
     <hr width="70%">
       <article>
-        The classification of poses in performing the Philippines’ sports and martial arts,
-        called Arnis, can be a significant computer vision technology that could be part of an online
-        learning tool. The researchers proposed a real-time classification model that could classify
-        the poses in the 12 basic strikes and 12 blocks techniques of the Arnis martial arts. The
-        discussion in the paper focuses on the utilization of the BlazePose, a real-time human pose
+        &emsp; The classification of poses in performing the Philippines’ sports and martial arts,
+        called <strong> Arnis</strong>, can be a significant computer vision technology that could be part of an online
+        learning tool. The researchers proposed a <strong> real-time classification model </strong> that could classify
+        the poses in the <strong> 12 basic strikes </strong> and <strong> 12 blocks </strong> techniques of the Arnis martial arts. The
+        discussion in the paper focuses on the utilization of the <strong> BlazePose</strong>, a real-time human pose
         estimation model, for extraction of the important keypoints in the body. The study also
         contributes a new Arnis baston dataset collected by means of web scraping and other
         collection methods. The ground truth pose dataset is based on professional practitioners of
         the Modern Arnis Tapi Tapi International - San Juan teaching The fundamentals of Arnis on
-        YouTube. Our proposed method involves the computation of angles from the extracted
-        target joints of the BlazePose model for each of the Arnis basic pose. The overall model was
-        incorporated with a custom object detection model, which we also developed, that detects
-        the location of the Arnis baston. Direction threshold of the arms were also added to widen
-        the distinction between the poses. Our custom baston detector has a 46.56 mAP, based on
-        the COCO validation, that highly contributes to the pose classification model that received a
-        87% classification accuracy when validated on a webcam feed with a maximum of 0.05
-        seconds of prediction time.
+        YouTube. Our proposed method involves the computation of <strong> angles </strong> from the extracted
+        <strong> target joints </strong> of the BlazePose model for each of the Arnis basic pose. The overall model was
+        incorporated with a custom object detection model, which we also developed, that <strong> detects </strong>
+        the <strong> location of the Arnis baston</strong>. Direction threshold of the arms were also added to widen
+        the distinction between the poses. Our custom baston detector has a <strong> 46.56 mAP</strong>, based on
+        the <strong> COCO validation</strong>, that highly contributes to the pose classification model that received a
+        <strong> 87% classification accuracy </strong> when validated on a webcam feed with a maximum of <strong> 0.05
+        seconds of prediction time.</strong>
       </article>
     <hr width="70%">
   </div>
 </div>
+ <!--  Second Row------------------------------------------------>
+<div class="row">
+  <h2 style="color: #6699ff; margin-left: 15%;">
+    Meet the Team
+  </h2>
+  <!--  First Column------------------------------------------------>
+  <div class="column2">
+
+    <center style="margin-left: 200px">
+      <img src="{{ url_for('static', filename='elias.jpg') }}" height="300px" class="img">
+      <p style="font-size: 25px;">
+         Cabo, Elias Ezar R.
+        <br>
+         <a href="mailto:ecabo.k11617099@umak.edu.ph" > ecabo.k11617099@umak.edu.ph </a>
+        <br>
+        <font size="3px"> Project Manager </font>
+      </p>
+    </center>
+
+  </div>
+  <!--  Second Column------------------------------------------------>
+  <div class="column2">
+
+    <center style="margin-right: 200px">
+      <img src="{{ url_for('static', filename='jeah.jpg') }}" height="300px" class="img">
+      <p style="font-size: 25px;">
+        Salsalida, Jeah T.
+        <br>
+         <a href="mailto:jsalsalida.k11614497@umak.edu.ph" > jsalsalida.k11614497@umak.edu.ph </a>
+        <br>
+        <font size="3px"> Project Member </font>
+      </p>
+    </center>
+
+  </div>
+</div>
+
+<!--  Third Row------------------------------------------------>
+<div class="row">
+  <h2 style="color: #6699ff; margin-left: 15%;">
+    Spacial Thanks to the following:
+  </h2>
+  <!--  First Column------------------------------------------------>
+  <div class="column2">
+
+    <center style="margin-left: 200px">
+      <img src="{{ url_for('static', filename='alar.jpg') }}" height="300px" class="img">
+      <p style="font-size: 25px;">
+         Hernan Alar, PhD.
+        <br>
+         <a href="mailto:hernan.alar@umak.edu.ph" > hernan.alar@umak.edu.ph </a>
+        <br>
+        <font size="3px"> Thesis Adviser </font>
+      </p>
+    </center>
+
+  </div>
+  <!--  Second Column------------------------------------------------>
+  <div class="column2">
+
+    <center style="margin-right: 200px">
+      <img src="{{ url_for('static', filename='matti.jpg') }}" height="300px" class="img">
+      <p style="font-size: 25px;">
+        MATTI - San Juan
+        <br>
+         <a href="mailto:fmalegacy2021@gmail.com" > fmalegacy2021@gmail.com </a>
+        <br>
+        <font size="3px"> Arnis Resource Partner </font>
+      </p>
+      <a href="https:/www.facebook.com/mattisanjuan/" target="_blank">
+        <img src="{{ url_for('static', filename='fblogo.png') }}" class="fblogo" style="float:right"/>
+      </a>
+
+      <a href="https://www.youtube.com/channel/UCDuAYTZ7K3Zh6WAjV4u2z4A/" target="_blank">
+        <img src="{{ url_for('static', filename='yt.png') }}" class="instalogo" style="float:right"/>
+      </a>
+    </center>
+
+  </div>
+</div>
+
 </body>
 </html>

@@ -2,13 +2,14 @@
 <head>
   <title>Welcome!</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/index.css') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}" />
 </head>
 <body>
 
 <nav>
   <ul class="nav">
-    <li><a href="#" style="margin-right: 100px;">How to use</a></li>
-    <li><a href="#">Pose Description</a></li>
+    <li><a href="{{ url_for('instruction') }}" style="margin-right: 100px;">How to use</a></li>
+    <li><a href="{{ url_for('poseDesc') }}">Pose Description</a></li>
     <li><a href="{{ url_for('about') }}">About</a></li>
     <li><a href="{{ url_for('index') }}" class="hActive">Home</a></li>
   </ul>
@@ -25,10 +26,10 @@
       with this webapp
     </h1>
     <br style="display: block; margin-top:30px; line-height:30px;">
-    <h3 style="text-align: center;">
-      This web app assess Arnis strikes and blocks poses <br>
-      without the aid of a trainer, anytime even at home
-    </h3>
+    <div class="sub">
+      <p> This web app assess Arnis strikes and blocks poses </p>
+      <p> without the aid of a trainer, anytime even at home </p>
+    </div>
     <hr>
   </div>
 
@@ -36,7 +37,7 @@
   <div class="column2">
     <img src="{{ url_for('static', filename='double-arnis_no-bg.gif') }}">
     <br>
-    <h1 style="text-align: center;">Start the program by selecting a method:</h1>
+    <h1 style="text-align: center; color: #6699ff;">Start the program by selecting a method:</h1>
     <form method="POST" action="{{url_for('process')}}">
 
       <!--<input type="text" name="response" value="yes" hidden>-->

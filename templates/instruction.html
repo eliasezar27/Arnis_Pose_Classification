@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>About</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/instruction.css') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}" />
+</head>
+<body>
+<nav>
+  <ul class="nav">
+    <li><a href="{{ url_for('instruction') }}" class="hActive" style="margin-right: 100px;">How to use</a></li>
+    <li><a href="{{ url_for('poseDesc') }}">Pose Description</a></li>
+    <li><a href="{{ url_for('about') }}">About</a></li>
+    <li><a href="{{ url_for('index') }}">Home</a></li>
+  </ul>
+</nav>
+
+<h1>
+  General Instruction:
+</h1>
+<br><br>
+<div class="row">
+
+  <!------FIRST COLUMN----------------------------------------->
+  <div class="column">
+    <br><br>
+    <hr width="70%">
+    <div class="lst">
+      <ul>
+        <li>When performing the strikes and blocks, stay in a stationary position (feet facing front).</li>
+        <li>Place the camera on the same height as your chin.</li>
+        <li>Adjust the camera angle 6 degrees facing down.</li>
+        <li>Stand 170 cm away from the camera.</li>
+        <li>You may choose to show or hide the skeleton, FPS, or angles from the Developer Options.</li>
+        <li>After, performing the poses, you may view each of your poses and its grades.</li>
+      </ul>
+    </div>
+    <hr width="70%">
+  </div>
+</div>
+</body>
+</html>

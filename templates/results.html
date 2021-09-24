@@ -1,16 +1,24 @@
 <html>
 <head>
   <title>Arnis Pose Grading Results</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/gradeRes.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/gradeRes.css') }}" />
 </head>
 <body>
+<nav>
+  <ul class="nav">
+    <li><a href="#" style="margin-right: 100px;">How to use</a></li>
+    <li><a href="#">Pose Description</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="{{ url_for('index') }}">Home</a></li>
+  </ul>
+</nav>
 
   <h1>Detailed Pose Results</h1>
-  <button onclick="location.href='/'"> Go back </button>
+
   <div class="row">
 
     <!-- ARNIS STRIKES -------------------------------------------------------------------------------->
-    <div class="column" style="background-color:#aaa;">
+    <div class="column">
       <h2>Arnis Strikes</h2>
 
       <!-- Left Temple Strike -->
@@ -114,7 +122,7 @@
     </div>
 
     <!-- ARNIS BLOCK -------------------------------------------------------------------------------->
-    <div class="column" style="background-color:#bbb;">
+    <div class="column2">
       <h2>Arnis Blocks</h2>
 
       <!-- Left Temple Block -->

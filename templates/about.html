@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>About</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/about.css') }}" />
+</head>
+<body>
+<nav>
+  <ul class="nav">
+    <li><a href="#" style="margin-right: 100px;">How to use</a></li>
+    <li><a href="#">Pose Description</a></li>
+    <li><a href="#" class="hActive">About</a></li>
+    <li><a href="{{ url_for('index') }}">Home</a></li>
+  </ul>
+</nav>
+
+<div class="row">
+
+  <!------FIRST COLUMN----------------------------------------->
+  <div class="column">
+    <br style="display:block; margin-top:200px; line-height:200px;">
+    <hr>
+      <article>
+        The classification of poses in performing the Philippines’ sports and martial arts,
+        called Arnis, can be a significant computer vision technology that could be part of an online
+        learning tool. The researchers proposed a real-time classification model that could classify
+        the poses in the 12 basic strikes and 12 blocks techniques of the Arnis martial arts. The
+        discussion in the paper focuses on the utilization of the BlazePose, a real-time human pose
+        estimation model, for extraction of the important keypoints in the body. The study also
+        contributes a new Arnis baston dataset collected by means of web scraping and other
+        collection methods. The ground truth pose dataset is based on professional practitioners of
+        the Modern Arnis Tapi Tapi International - San Juan teaching The fundamentals of Arnis on
+        YouTube. Our proposed method involves the computation of angles from the extracted
+        target joints of the BlazePose model for each of the Arnis basic pose. The overall model was
+        incorporated with a custom object detection model, which we also developed, that detects
+        the location of the Arnis baston. Direction threshold of the arms were also added to widen
+        the distinction between the poses. Our custom baston detector has a 46.56 mAP, based on
+        the COCO validation, that highly contributes to the pose classification model that received a
+        87% classification accuracy when validated on a webcam feed with a maximum of 0.05
+        seconds of prediction time.
+      </article>
+    <hr>
+  </div>
+</div>
+</body>
+</html>

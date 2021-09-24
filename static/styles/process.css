@@ -1,0 +1,76 @@
+*{
+    font-family: Helvetica;
+    font-weight: bold;
+}
+
+body{
+    background-color: #a0522d;
+}
+
+nav{
+    top: 0px;
+    position: sticky;
+    opacity: .95;
+    z-index: 1;
+    font-size: 16px;
+	}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #a0522d;
+	}
+
+li {
+    float: right;
+	}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+	}
+
+li a:hover:not(.hActive) {
+    background-color: #663300;
+    }
+
+.hActive {
+    border-bottom: 3.5px solid white;
+	}
+
+h1, h5{
+    color: #ffffff;
+    }
+
+.button {
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: #a87d26;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 5px #dba800;
+    margin-left: 5px;
+	}
+
+.button:hover {
+    background-color: #663300
+    }
+
+.button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 3px #666;
+    transform: translateY(4px);
+}
+
+.poseResButt{
+    float: right;
+    margin-right: 350px;
+    }

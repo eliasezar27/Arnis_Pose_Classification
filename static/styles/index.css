@@ -1,14 +1,20 @@
-* {
-  box-sizing: border-box;
-  font-family: Helvetica;
-   font-weight: bold;
+*{
+    font-family: Helvetica;
+    font-weight: bold;
 }
 
 /* Create two equal columns that floats next to each other */
-.column, .column2 {
+.column {
   float: left;
   width: 50%;
   padding: 10px;
+}
+
+.column2 {
+  float: left;
+  width: 40%;
+  padding: 10px;
+  padding-left: 50px;
 }
 
 /* Clear floats after the columns */
@@ -50,7 +56,7 @@ li a {
     text-decoration: none;
 	}
 
-li a:hover:not(.hActive), .column2 {
+li a:hover:not(.hActive) {
     background-color: #663300;
     }
 
@@ -58,6 +64,36 @@ li a:hover:not(.hActive), .column2 {
     border-bottom: 3.5px solid white;
 	}
 
-h1, h2, h5, p{
+h1, h3, h5{
     color: #ffffff;
+    }
+
+.button {
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: #a87d26;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 5px #dba800;
+    margin-left: 5px;
+	}
+
+.button:hover {
+    background-color: #663300
+    }
+
+.button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 3px #666;
+    transform: translateY(4px);
+}
+
+hr{
+    height: 3px;
+    width: 100%
+    color: #ffffff;
+    background-color: #ffffff;
     }

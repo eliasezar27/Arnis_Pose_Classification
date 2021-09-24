@@ -36,7 +36,7 @@ lock = threading.Lock()
 # initialize a flask object
 app = Flask(__name__)
 
-vs = VideoStream(src=1).start()
+vs = VideoStream(src=0).start()
 # time.sleep(2.0)
 prev_frame_time = 0
 
@@ -119,6 +119,12 @@ def results():
     grade_res = ave_grade[:]
 
     return render_template('results.html', resGrade=grade_res)
+
+
+# About page
+# @app.route('/about', methods=['GET', 'POST'])
+# def about():
+#     return render_template('about.html')
 
 
 # Read poses from camera input

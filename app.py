@@ -142,6 +142,7 @@ def camera():
     fnt = cv2.FONT_HERSHEY_DUPLEX
     file_speed = 'speed.txt'
     file_mem = ''
+    mem_usage = 0
     end_time, start = 0, 0
     # grab global references to the video stream, output frame, and
     # lock variables
@@ -168,8 +169,8 @@ def camera():
             frame, grade = pose_det(frame, detection_model, skltn, shwAngl, pose_key, grading_ver)
             end_time = time.time()
         elif class_ver:
-            file_speed = "speed_classi_16.txt"
-            file_mem = "mem_usage_16.txt"
+            file_speed = "speed_classi_1.txt"
+            file_mem = "mem_usage_1.txt"
             start = time.time()
             frame = pose_det(frame, detection_model, skltn, shwAngl)
             mem_usage = p.memory_info().rss / 1024 / 1024

@@ -10,8 +10,11 @@ from statistics import mean
 import tensorflow as tf
 from object_detection.utils import config_util
 import os
+import psutil
 from object_detection.builders import model_builder
 import cv2
+
+p = psutil.Process(os.getpid())
 
 CONFIG_PATH = "training_v2/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8.config"
 
@@ -36,7 +39,7 @@ lock = threading.Lock()
 # initialize a flask object
 app = Flask(__name__)
 
-vs = VideoStream(src=0).start()
+vs = VideoStream(src=1).start()
 # time.sleep(2.0)
 prev_frame_time = 0
 
@@ -80,13 +83,6 @@ def process():
             pose_key = 1
             grading_ver = True
             class_ver = False
-
-        # Dominant Hand options
-        if request.form.get('right_h') == "Right Hand":
-            pass
-
-        if request.form.get('left_h') == "Left Hand":
-            pass
 
         # Dev Options
 
@@ -145,6 +141,7 @@ def camera():
     blur_end = False
     fnt = cv2.FONT_HERSHEY_DUPLEX
     file_speed = 'speed.txt'
+    file_mem = ''
     end_time, start = 0, 0
     # grab global references to the video stream, output frame, and
     # lock variables
@@ -171,9 +168,11 @@ def camera():
             frame, grade = pose_det(frame, detection_model, skltn, shwAngl, pose_key, grading_ver)
             end_time = time.time()
         elif class_ver:
-            file_speed = "speed_classi.txt"
+            file_speed = "speed_classi_16.txt"
+            file_mem = "mem_usage_16.txt"
             start = time.time()
             frame = pose_det(frame, detection_model, skltn, shwAngl)
+            mem_usage = p.memory_info().rss / 1024 / 1024
             end_time = time.time()
 
         # Run if grading method
@@ -212,7 +211,11 @@ def camera():
 
         if grading_ver or class_ver:
             if end_time - start > 0:
-                print('Pose classification prediction time: ', end_time - start)
+                print('inference time: ', end_time - start, 'Memory usage: ', mem_usage)
+                # Save memory usage in text file
+                with open(file_mem, 'a') as f2:
+                    f2.write(str(mem_usage) + ", ")
+
                 # Save prediction/classification time in text file
                 with open(file_speed, 'a') as f:
                     f.write(str(end_time - start) + ", ")

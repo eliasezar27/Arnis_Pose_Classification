@@ -39,7 +39,7 @@ lock = threading.Lock()
 # initialize a flask object
 app = Flask(__name__)
 
-vs = VideoStream(src=1).start()
+vs = VideoStream(src=0).start()
 # time.sleep(2.0)
 prev_frame_time = 0
 
@@ -113,7 +113,7 @@ def process():
     elif request.method == "GET":
         return render_template('process.html')
 
-    return render_template('process.html', categ=ctgry, skeleton=skltn, fps=shwFPS, angles=shwAngl)
+    return render_template('process.html', categ=ctgry, skeleton=skltn, fps=shwFPS, angles=shwAngl, instnc=instanceNum)
 
 
 # Pose Grading Results Page

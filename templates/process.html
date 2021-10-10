@@ -36,6 +36,13 @@
 <center>
   <form method="POST" action="{{url_for('process')}}">
 
+    <center>
+      <h5>
+        Input Instance No.: <input type="text" name="instance">
+        <input type='submit' name="capt" value="Capture" class="button"/>
+      </h5>
+    </center>
+
     <h5>Developer Options:</h5>
 
     {% if not skeleton %}

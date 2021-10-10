@@ -110,7 +110,7 @@ def pose_det(frame, model, shwSkltn, s_angle, key=1, grading=False):
     if grading:
         return frame, grade
     else:
-        return frame
+        return frame, label
 
 
 def angle_det(frame):

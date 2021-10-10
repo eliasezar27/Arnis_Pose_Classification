@@ -59,6 +59,8 @@ ctgry = ""
 skltn = False
 shwFPS = False
 shwAngl = False
+scCap = False
+instanceNum = -1
 
 
 # Index page
@@ -70,7 +72,7 @@ def index():
 # Pose Classification Page
 @app.route('/arnis-pose', methods=['GET', 'POST'])
 def process():
-    global grading_ver, class_ver, pose_key, skltn, ctgry, shwFPS, shwAngl
+    global grading_ver, class_ver, pose_key, skltn, ctgry, shwFPS, shwAngl, scCap, instanceNum
 
     if request.method == "POST":
         if request.form.get('class') == "Classification":
@@ -83,6 +85,12 @@ def process():
             pose_key = 1
             grading_ver = True
             class_ver = False
+
+        # Screen capture
+        if request.form.get('capt') == "Capture":
+            scCap = True
+            # Instance number from text box
+            instanceNum = request.form.get('instance')
 
         # Dev Options
 
@@ -137,16 +145,20 @@ def instruction():
 
 # Read poses from camera input
 def camera():
-    global vs, outputFrame, lock, prev_frame_time, pose_key, grade, prev_grade, ave_grade, grading_ver, skltn, shwAngl
+    global vs, outputFrame, lock, prev_frame_time, pose_key, grade, prev_grade, ave_grade, grading_ver, skltn, shwAngl, scCap, instanceNum
     blur_end = False
     fnt = cv2.FONT_HERSHEY_DUPLEX
     file_speed = 'speed.txt'
     file_mem = ''
     mem_usage = 0
     end_time, start = 0, 0
+
+    # Change number per participant
+    # instanceNum = 0
+    label = ''
+
     # grab global references to the video stream, output frame, and
     # lock variables
-
     while True:
         if grading_ver:
             # print('Grade: ', grade, ' Prev grade: ', prev_grade)
@@ -156,6 +168,7 @@ def camera():
 
         # read the next frame from the video stream, resize it,
         frame = vs.read()
+        raw_frame = frame
         frame = imutils.resize(frame, width=800)
 
         # ADDED: get frame dimension
@@ -169,12 +182,27 @@ def camera():
             frame, grade = pose_det(frame, detection_model, skltn, shwAngl, pose_key, grading_ver)
             end_time = time.time()
         elif class_ver:
-            file_speed = "speed_classi_1.txt"
-            file_mem = "mem_usage_1.txt"
+            file_speed = "speed_dir/speed_classi_" + str(instanceNum) + ".txt"
+            file_mem = "memory_dir/mem_usage_" + str(instanceNum) + ".txt"
             start = time.time()
-            frame = pose_det(frame, detection_model, skltn, shwAngl)
+            frame, label = pose_det(frame, detection_model, skltn, shwAngl)
             mem_usage = p.memory_info().rss / 1024 / 1024
             end_time = time.time()
+
+        # If Capture is pressed then the raw image is saved
+        if scCap:
+            if not os.path.exists('test_inst_dir'):
+                os.mkdir('test_inst_dir')
+            if not os.path.exists('test_inst_dir/test' + str(instanceNum)):
+                os.mkdir('test_inst_dir/test' + str(instanceNum))
+            cv2.imwrite('test_inst_dir/test' + str(instanceNum) + '/' + label + '.jpg', raw_frame)
+            scCap = False
+
+        if not os.path.exists('speed_dir'):
+            os.mkdir('speed_dir')
+
+        if not os.path.exists('memory_dir'):
+            os.mkdir('memory_dir')
 
         # Run if grading method
         if grading_ver:

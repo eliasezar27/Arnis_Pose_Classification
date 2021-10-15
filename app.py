@@ -60,7 +60,7 @@ skltn = False
 shwFPS = False
 shwAngl = False
 scCap = False
-instanceNum = -1
+instanceNum = "Instance number"
 
 
 # Index page

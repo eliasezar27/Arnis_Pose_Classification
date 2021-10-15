@@ -74,3 +74,9 @@ h1, h5{
     float: right;
     margin-right: 350px;
     }
+
+#d_option2, #devButt{
+    margin: auto;
+    width: 54%;
+    padding: 10px;
+}

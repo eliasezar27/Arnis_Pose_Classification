@@ -24,27 +24,40 @@
   <br>
   <img src="{{ url_for('video_feed') }}" alt = "Camera is Loading...">
 </center>
-  {% if categ == "GRADING" %}
-  <br><br>
-  <form method="POST" action="{{url_for('results')}}">
-    <div class="poseResButt">
-      <input type="submit" name="result" value="Detailed Pose Results" class="button"/>
-    </div>
-  </form>
-  {% endif %}
-  <br>
-<center>
-  <form method="POST" action="{{url_for('process')}}">
+{% if categ == "GRADING" %}
+<br><br>
+<form method="POST" action="{{url_for('results')}}">
+  <div class="poseResButt">
+    <input type="submit" name="result" value="Detailed Pose Results" class="button"/>
+  </div>
+</form>
+{% endif %}
+<br>
 
+<form method="POST" action="{{url_for('process')}}">
+
+  <div id = "d_option1">
+    {% if categ == "CLASSIFICATION" %}
     <center>
       <h5>
-        Input Instance No.: <input type="text" name="instance" value={{ instnc }}>
+        Input Instance No.: <input type="text" name="instance" value="{{ instnc }}">
         <input type='submit' name="capt" value="Capture" class="button"/>
       </h5>
     </center>
+    {% endif %}
+  </div>
 
-    <h5>Developer Options:</h5>
+</form>
 
+<div id="devButt">
+  <h5>
+    <button onclick="devOpt()" id="btn" class="button">Show</button>
+    Developer Options:
+  </h5>
+</div>
+
+<form method="POST" action="{{url_for('process')}}">
+  <div id = "d_option2">
     {% if not skeleton %}
     <input type='submit' name="skeleton" value="Show Skeleton" class="button"/>
     <!-- <input type="checkbox" id="skeleton" name="skeleton" value="skeleton">
@@ -68,12 +81,40 @@
     {% else %}
     <input type='submit' name="angle2" value="Hide Angles" class="button"/>
     {% endif %}
+  </div>
 
-  </form>
-</center>
+</form>
+
 
 </body>
 <script>
   window.scrollTo(0,document.body.scrollHeight);
+
+  var x = document.getElementById("d_option1");
+  var y = document.getElementById("d_option2");
+  const btn = document.getElementById("btn");
+  x.style.display = "none";
+  y.style.display = "none";
+
+  function devOpt(){
+    if (y.style.display === "none"){
+      x.style.display = "block";
+      y.style.display = "block";
+    }else{
+      x.style.display = "none";
+      y.style.display = "none";
+    }
+  }
+
+  btn.addEventListener("click", ()=>{
+
+    if (btn.innerText === "Show"){
+      btn.innerText = "Hide";
+    } else {
+      btn.innerText = "Show";
+    }
+
+  });
+
 </script>
 </html>

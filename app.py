@@ -39,7 +39,7 @@ lock = threading.Lock()
 # initialize a flask object
 app = Flask(__name__)
 
-vs = VideoStream(src=0).start()
+vs = VideoStream(src=1).start()
 # time.sleep(2.0)
 prev_frame_time = 0
 
@@ -177,6 +177,7 @@ def camera():
 
         if grading_ver:
             file_speed = "speed_grade.txt"
+            file_mem = "mem_grade.txt"
             # added arg: pose key, added var: grade
             start = time.time()
             frame, grade = pose_det(frame, detection_model, skltn, shwAngl, pose_key, grading_ver)

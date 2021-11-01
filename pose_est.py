@@ -103,7 +103,7 @@ def pose_det(frame, model, shwSkltn, s_angle, key=1, grading=False):
     frame = cv2.flip(frame, 1)
     if s_angle:
         joints_angles = joint_angles(joints, [(-1, -1), (-1, -1), (-1, -1), (-1, -1)])
-        frame = angle_vis(frame, joints, joints_angles)
+        frame = angle_vis(frame, joints, joints_angles, bboxList)
     frame = cv2.rectangle(frame, (0, h), (labX, h - labY - 20), (255, 255, 255), cv2.FILLED)
     frame = cv2.putText(frame, label, (2, h - 15), fnt, 1.2, color_text, 2, cv2.LINE_AA)
 
@@ -137,8 +137,36 @@ def angle_det(frame):
     return frame, joints_angles
 
 
-def angle_vis(frame, joints, joints_angles):
+def angle_vis(frame, joints, joints_angles, bboxList):
     h, w, c = frame.shape
+    pt1, pt2, pt3, pt4 = bboxList
+
+    # Display baston points
+    if pt1:
+        x, y = pt1
+        x = w - x - 1
+        frame = cv2.putText(frame, str(1), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            (246, 255, 0), 2, cv2.LINE_AA)
+
+    if pt2:
+        x, y = pt2
+        x = w - x - 1
+        frame = cv2.putText(frame, str(2), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            (246, 255, 0), 2, cv2.LINE_AA)
+
+    if pt3:
+        x, y = pt3
+        x = w - x - 1
+        frame = cv2.putText(frame, str(3), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            (246, 255, 0), 2, cv2.LINE_AA)
+
+    if pt4:
+        x, y = pt4
+        x = w - x - 1
+        frame = cv2.putText(frame, str(4), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            (246, 255, 0), 2, cv2.LINE_AA)
+
+    # Show joints
 
     if 14 in joints:
         x, y = joints[14]
@@ -225,7 +253,7 @@ def det_baston(frame, model):
         agnostic_mode=False,
         skip_scores=True,
         skip_labels=True,
-        skip_boxes=True)
+        skip_boxes=False)
 
     det_scrs = list(detections['detection_scores'])
     det_boxes = list(detections['detection_boxes'])

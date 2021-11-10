@@ -43,7 +43,7 @@ def pose_det(frame, model, shwSkltn, s_angle, key=1, grading=False):
     grade = 0
 
     # Detect Baston
-    frame, bboxList = det_baston(frame, model)
+    frame, bboxList = det_baston(frame, model, not shwSkltn)
     h, w, c = frame.shape
 
     # Detect body keypoints directly from re-RGB frame
@@ -132,7 +132,7 @@ def angle_det(frame):
                 print(jt_id, cx, cy, 'th: ', thr)
 
     joints_angles = joint_angles(joints, [(-1, -1), (-1, -1), (-1, -1), (-1, -1)])
-    frame = angle_vis(frame, joints, joints_angles)
+    frame = angle_vis(frame, joints, joints_angles, [0, 0, 0, 0])
 
     return frame, joints_angles
 
@@ -219,7 +219,7 @@ def angle_vis(frame, joints, joints_angles, bboxList):
     return frame
 
 
-def det_baston(frame, model):
+def det_baston(frame, model, shwBx):
     category_index = label_map_util.create_category_index_from_labelmap('training_v2/label_map.pbtxt')
     image_np = np.array(frame)
     height, width, _ = frame.shape
@@ -253,7 +253,7 @@ def det_baston(frame, model):
         agnostic_mode=False,
         skip_scores=True,
         skip_labels=True,
-        skip_boxes=False)
+        skip_boxes=shwBx)
 
     det_scrs = list(detections['detection_scores'])
     det_boxes = list(detections['detection_boxes'])
